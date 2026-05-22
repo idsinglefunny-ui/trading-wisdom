@@ -3,7 +3,7 @@ package com.tradeyourplan.ui.alarm
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.timepicker.TimePickerState
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -58,7 +58,7 @@ fun AlarmEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                AlarmType.values().toList().forEach { type ->
+                AlarmType.entries.forEach { type ->
                     FilterChip(
                         selected = selectedType == type,
                         onClick = { selectedType = type },
@@ -127,7 +127,7 @@ fun AlarmEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                RepeatMode.values().toList().forEach { mode ->
+                RepeatMode.entries.forEach { mode ->
                     FilterChip(
                         selected = selectedRepeatMode == mode,
                         onClick = { selectedRepeatMode = mode },
@@ -143,7 +143,7 @@ fun AlarmEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                NotificationLevel.values().toList().forEach { level ->
+                NotificationLevel.entries.forEach { level ->
                     FilterChip(
                         selected = selectedNotificationLevel == level,
                         onClick = { selectedNotificationLevel = level },

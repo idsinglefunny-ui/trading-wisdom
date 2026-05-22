@@ -46,7 +46,7 @@ fun AlarmListScreen(
             EmptyState(
                 icon = {
                     Icon(
-                        Icons.Outlined.Inbox,
+                        Icons.Default.Notifications,
                         null,
                         modifier = Modifier.size(64.dp),
                         tint = MaterialTheme.colorScheme.outlineVariant

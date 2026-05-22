@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tradeyourplan.domain.model.Category
 import com.tradeyourplan.domain.model.MarketType
@@ -72,7 +73,7 @@ fun AddQuoteScreen(
                     expanded = showCategoryMenu,
                     onDismissRequest = { showCategoryMenu = false }
                 ) {
-                    Category.values.toList().forEach { category ->
+                    Category.entries.forEach { category ->
                         DropdownMenuItem(
                             text = { Text(category.displayName) },
                             onClick = {
@@ -103,7 +104,7 @@ fun AddQuoteScreen(
                     expanded = showMarketTypeMenu,
                     onDismissRequest = { showMarketTypeMenu = false }
                 ) {
-                    MarketType.values.toList().forEach { type ->
+                    MarketType.entries.forEach { type ->
                         DropdownMenuItem(
                             text = { Text(type.displayName) },
                             onClick = {

@@ -133,6 +133,7 @@ private fun SettingItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingDropdown(
     title: String,

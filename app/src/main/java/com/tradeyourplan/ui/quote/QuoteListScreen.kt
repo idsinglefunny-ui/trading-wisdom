@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tradeyourplan.data.model.Quote
 import com.tradeyourplan.domain.model.Category
@@ -45,7 +46,7 @@ fun QuoteListScreen(
             EmptyState(
                 icon = {
                     Icon(
-                        Icons.Outlined.Inbox,
+                        Icons.Default.FormatQuote,
                         null,
                         modifier = Modifier.size(64.dp),
                         tint = MaterialTheme.colorScheme.outlineVariant
@@ -84,12 +85,13 @@ fun QuoteListScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CategoryFilterRow(
     selectedCategory: Category?,
     onCategorySelected: (Category?) -> Unit
 ) {
-    val categories = listOf(null) + Category.values.toList()
+    val categories = listOf(null) + Category.entries
 
     Row(
         modifier = Modifier
