@@ -23,38 +23,27 @@ class QuotesInitializer @Inject constructor(
     private val gson = Gson()
 
     suspend fun initializeIfNeeded() = withContext(Dispatchers.IO) {
-        val existingQuotes = quoteDao.getAllQuotes()
-        // 如果已有语录，不再初始化
-        // 这里需要第一次获取，实际可以用单次执行标志
-        val count = try {
-            // 获取当前值
-            val list = mutableListOf<QuoteEntity>()
-            quoteDao.getAllQuotes().collect { list.addAll(it) }
-            list.size
-        } catch (e: Exception) {
-            0
-        }
-
-        if (count == 0) {
+        val existingQuotes = quoteDao.getSystemQuotes()
+        if (existingQuotes.isEmpty()) {
             loadQuotesFromAssets()
         }
     }
 
-    private fun loadQuotesFromAssets() {
+    private suspend fun loadQuotesFromAssets() {
         try {
             val json = context.assets.open("quotes.json").bufferedReader().use { it.readText() }
             val quoteType = object : TypeToken<List<QuoteDto>>() {}.type
             val quoteDtos: List<QuoteDto> = gson.fromJson(json, quoteType)
 
-            quoteDtos.forEach { dto ->
-                val entity = QuoteEntity(
+            val entities = quoteDtos.map { dto ->
+                QuoteEntity(
                     content = dto.content,
                     category = dto.category,
                     marketType = dto.marketType,
                     source = dto.source
                 )
-                quoteDao.insertQuote(entity)
             }
+            quoteDao.insertQuotes(entities)
         } catch (e: Exception) {
             e.printStackTrace()
         }
