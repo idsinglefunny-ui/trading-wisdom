@@ -58,5 +58,545 @@
     "category": "MINDSET",
     "marketType": "FUTURES",
     "source": "SYSTEM"
+  },
+  {
+    "content": "亏钱的原因不是市场，而是自己",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "新手死于追高，老手死于抄底",
+    "category": "MINDSET",
+    "marketType": "STOCK",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "会买的是徒弟，会卖的是师傅",
+    "category": "TECHNICAL",
+    "marketType": "STOCK",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "成交量不会骗人",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "顺势而为，不要逆势操作",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "宁可错过，不可做错",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "止损是交易的生命线",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要试图抄底，子弹是有限的",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "市场永远存在机会，资金不一定是",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "复利是第八大奇迹",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要情绪化交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "做好交易日记，总结经验",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "建立自己的交易系统",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "严格执行交易计划",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要重仓交易",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "每次亏损不超过本金的2%",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要频繁交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "保持耐心，等待最佳时机",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "市场会反复惩罚同一类错误",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "承认错误是成功的第一步",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要预测市场，跟随市场",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "突破要有量配合",
+    "category": "TECHNICAL",
+    "marketType": "STOCK",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "支撑位买入，阻力位卖出",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要相信内幕消息",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "控制回撤比追求收益更重要",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "学会空仓，休息也是交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要听信小道消息",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "技术分析只是概率工具",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "基本面决定长期趋势",
+    "category": "TECHNICAL",
+    "marketType": "STOCK",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "均线是趋势的指南针",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要逆势而为",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要加杠杆超过自己承受能力",
+    "category": "RISK_MGMT",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "止损要快，止盈要慢",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要让盈利变成亏损",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "移动止损保护利润",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "市场永远有机会",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "贪婪是亏损的根源",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "恐惧会让你错失机会",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "保持独立思考",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要盲目跟风",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "学会接受亏损",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "交易是马拉松，不是百米冲刺",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "保持交易的一致性",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要频繁更换策略",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "专注自己熟悉的领域",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要在情绪波动时交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "交易不是赌博",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "没有100%准确的交易方法",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "接受不确定性是交易的一部分",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "新手死于追高，老手死于抄底",
+    "category": "MINDSET",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "期货市场没有绝对",
+    "category": "MINDSET",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "顺势者昌，逆势者亡",
+    "category": "TECHNICAL",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "分批建仓，分批平仓",
+    "category": "RISK_MGMT",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "满仓是期货大忌",
+    "category": "RISK_MGMT",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "严格止损是期货生存法则",
+    "category": "RISK_MGMT",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要和市场争论",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "市场永远是对的",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要试图战胜市场",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "适应市场变化",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要固执己见",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "止损是你的朋友",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要让小亏损变成大亏损",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "每次交易风险不超过2%",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "分散投资降低风险",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要把所有资金押在一笔交易上",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "风险控制比盈利更重要",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "生存第一，盈利第二",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要逆势加仓",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "金字塔加仓法",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要在亏损时加大仓位",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "只在盈利时加仓",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "设置止损是入场的前提",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要移止损",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "纪律是成功交易者的基石",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "遵守交易规则",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要冲动交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "保持冷静的头脑",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要被市场噪音干扰",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "坚持自己的交易原则",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要随意改变交易策略",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "耐心等待最佳入场点",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要急于入场",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "错过一个机会还有下一个",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要强迫交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "休息也是交易的一部分",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "连续亏损后暂停交易",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "做好交易计划并执行",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "记录每笔交易的思考",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "复盘是进步的关键",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "从错误中学习",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
   }
 ]
