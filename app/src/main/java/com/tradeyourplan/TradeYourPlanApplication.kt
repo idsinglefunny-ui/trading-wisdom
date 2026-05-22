@@ -3,12 +3,24 @@ package com.tradeyourplan
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltAndroidApp
 class TradeYourPlanApplication : Application() {
 
+    @Inject
+    lateinit var quotesInitializer: com.tradeyourplan.data.initializer.QuotesInitializer
+
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     override fun onCreate() {
         super.onCreate()
-        // 初始化预置数据将在 Task 6 中实现
+        applicationScope.launch {
+            quotesInitializer.initializeIfNeeded()
+        }
     }
 }

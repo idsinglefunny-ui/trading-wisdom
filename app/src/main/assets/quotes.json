@@ -1,0 +1,62 @@
+[
+  {
+    "content": "计划你的交易，交易你的计划",
+    "category": "DISCIPLINE",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "截断亏损，让利润奔跑",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要把所有鸡蛋放在一个篮子里",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "市场永远是对的，意见经常是错的",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "趋势是你的朋友",
+    "category": "TECHNICAL",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "恐惧和贪婪是最大的敌人",
+    "category": "MINDSET",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "不要在亏损的头寸上加仓",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "保住本金是第一原则",
+    "category": "RISK_MGMT",
+    "marketType": "GENERAL",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "等待确认信号，不要猜测",
+    "category": "TECHNICAL",
+    "marketType": "STOCK",
+    "source": "SYSTEM"
+  },
+  {
+    "content": "期货交易是概率游戏，不是赌博",
+    "category": "MINDSET",
+    "marketType": "FUTURES",
+    "source": "SYSTEM"
+  }
+]
