@@ -93,7 +93,7 @@ class QuoteRepository @Inject constructor(
     private fun QuoteEntity.toDomainModel() = Quote(
         id = id,
         content = content,
-        category = Category.fromString(category) ?: Category.GENERAL,
+        category = Category.fromString(category) ?: Category.DISCIPLINE,
         marketType = MarketType.fromString(marketType) ?: MarketType.GENERAL,
         source = QuoteSource.fromString(source) ?: QuoteSource.SYSTEM,
         isFavorite = isFavorite,
