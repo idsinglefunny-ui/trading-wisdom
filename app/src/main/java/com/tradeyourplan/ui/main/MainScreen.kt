@@ -30,7 +30,6 @@ fun MainScreen(
     onNavigateToSettings: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val themeMode by viewModel.themeMode.collectAsState()
     var selectedTab by remember { mutableStateOf("home") }
 
     Scaffold(

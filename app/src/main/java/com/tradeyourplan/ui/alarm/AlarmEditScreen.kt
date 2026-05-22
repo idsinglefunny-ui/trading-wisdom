@@ -30,6 +30,7 @@ fun AlarmEditScreen(
     }
     var startHour by remember { mutableIntStateOf(9) }
     var endHour by remember { mutableIntStateOf(15) }
+    var targetPackage by remember { mutableStateOf("") }
     var selectedRepeatMode by remember { mutableStateOf(RepeatMode.DAILY) }
     var selectedNotificationLevel by remember { mutableStateOf(NotificationLevel.NORMAL) }
 
@@ -79,18 +80,28 @@ fun AlarmEditScreen(
                     ) {
                         OutlinedTextField(
                             value = timePickerState.hour.toString(),
-                            onValueChange = { },
+                            onValueChange = {
+                                val hour = it.toIntOrNull()
+                                if (hour != null && hour in 0..23) {
+                                    timePickerState = timePickerState.copy(hour = hour)
+                                }
+                            },
                             label = { Text("时") },
                             modifier = Modifier.weight(1f),
-                            readOnly = true
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                         Text(":")
                         OutlinedTextField(
                             value = timePickerState.minute.toString().padStart(2, '0'),
-                            onValueChange = { },
+                            onValueChange = {
+                                val minute = it.toIntOrNull()
+                                if (minute != null && minute in 0..59) {
+                                    timePickerState = timePickerState.copy(minute = minute)
+                                }
+                            },
                             label = { Text("分") },
                             modifier = Modifier.weight(1f),
-                            readOnly = true
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }
                 }
@@ -117,7 +128,15 @@ fun AlarmEditScreen(
                 }
                 AlarmType.EVENT_TRIGGERED -> {
                     Text("事件触发", style = MaterialTheme.typography.titleMedium)
-                    Text("检测到交易应用启动后触发提醒", style = MaterialTheme.typography.bodySmall)
+                    OutlinedTextField(
+                        value = targetPackage,
+                        onValueChange = { targetPackage = it },
+                        label = { Text("目标应用包名") },
+                        placeholder = { Text("例如: com.example.trading") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+                    Text("检测到指定应用启动后触发提醒", style = MaterialTheme.typography.bodySmall)
                 }
             }
 
@@ -165,6 +184,7 @@ fun AlarmEditScreen(
                         minute = if (selectedType == AlarmType.FIXED) timePickerState.minute else null,
                         startHour = if (selectedType == AlarmType.RANDOM) startHour else null,
                         endHour = if (selectedType == AlarmType.RANDOM) endHour else null,
+                        targetPackage = if (selectedType == AlarmType.EVENT_TRIGGERED) targetPackage else null,
                         repeatMode = selectedRepeatMode,
                         notificationLevel = selectedNotificationLevel
                     )
