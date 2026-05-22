@@ -4,8 +4,10 @@ package com.tradeyourplan.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // 专业深色主题（默认）
-val Primary = Color(0xFF1E3A5F)
+val Primary = Color(0xFF3B82F6)
+val PrimaryContainer = Color(0xFF1E3A5F)
 val OnPrimary = Color(0xFFFFFFFF)
+val OnPrimaryContainer = Color(0xFFDBEAFE)
 val Secondary = Color(0xFF2563EB)
 val Accent = Color(0xFF059669)
 val Background = Color(0xFF0F172A)
@@ -17,7 +19,10 @@ val Border = Color(0xFF334155)
 val Destructive = Color(0xFFDC2626)
 
 // 温馨鼓励主题
-val WarmPrimary = Color(0xFF0F766E)
+val WarmPrimary = Color(0xFF14B8A6)
+val WarmPrimaryContainer = Color(0xFFCCFBF1)
+val WarmOnPrimary = Color(0xFFFFFFFF)
+val WarmOnPrimaryContainer = Color(0xFF0F766E)
 val WarmSecondary = Color(0xFF14B8A6)
 val WarmAccent = Color(0xFFF59E0B)
 val WarmBackground = Color(0xFFFFFBEB)
@@ -27,7 +32,10 @@ val WarmOnSurface = Color(0xFF1E293B)
 val WarmBorder = Color(0xFF99F6E4)
 
 // 极简浅色主题
-val LightPrimary = Color(0xFF0F172A)
+val LightPrimary = Color(0xFF0369A1)
+val LightPrimaryContainer = Color(0xFFBAE6FD)
+val LightOnPrimary = Color(0xFFFFFFFF)
+val LightOnPrimaryContainer = Color(0xFF0F172A)
 val LightSecondary = Color(0xFF334155)
 val LightAccent = Color(0xFF0369A1)
 val LightBackground = Color(0xFFF8FAFC)

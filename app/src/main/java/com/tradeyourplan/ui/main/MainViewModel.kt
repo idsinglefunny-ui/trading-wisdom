@@ -8,6 +8,7 @@ import com.tradeyourplan.domain.usecase.GetRandomQuoteUseCase
 import com.tradeyourplan.domain.usecase.ToggleFavoriteUseCase
 import com.tradeyourplan.ui.theme.ThemeMode
 import com.tradeyourplan.data.repository.SettingsRepository
+import com.tradeyourplan.domain.model.QuoteSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -37,6 +38,20 @@ class MainViewModel @Inject constructor(
             initialValue = ThemeMode.PROFESSIONAL_DARK
         )
 
+    private val quoteSource: StateFlow<QuoteSource?> = settingsRepository.quoteSource
+        .map { sourceStr ->
+            when (sourceStr) {
+                "SYSTEM" -> QuoteSource.SYSTEM
+                "USER" -> QuoteSource.USER
+                else -> null // MIXED
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
+
     init {
         loadRandomQuote()
     }
@@ -44,7 +59,8 @@ class MainViewModel @Inject constructor(
     fun loadRandomQuote() {
         viewModelScope.launch {
             _uiState.value = MainUiState.Loading
-            val quote = getRandomQuoteUseCase()
+            val sourceFilter = quoteSource.value
+            val quote = getRandomQuoteUseCase(sourceFilter)
             _uiState.value = if (quote != null) {
                 MainUiState.Success(quote)
             } else {

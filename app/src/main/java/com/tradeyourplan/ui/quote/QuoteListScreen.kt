@@ -1,5 +1,6 @@
 package com.tradeyourplan.ui.quote
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tradeyourplan.data.model.Quote
@@ -24,6 +26,7 @@ fun QuoteListScreen(
 ) {
     val quotes by viewModel.quotes.collectAsState()
     val filterCategory by viewModel.filterCategory.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -77,7 +80,17 @@ fun QuoteListScreen(
                     QuoteCard(
                         quote = quote,
                         onFavoriteClick = { viewModel.toggleFavorite(quote.id) },
-                        onShareClick = { /* TODO */ }
+                        onShareClick = {
+                            val shareText = """${quote.content}
+
+—— 交易你的计划
+#交易智慧 #投资语录""".trimIndent()
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, shareText)
+                            }
+                            context.startActivity(Intent.createChooser(intent, "分享语录"))
+                        }
                     )
                 }
             }

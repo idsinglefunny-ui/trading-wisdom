@@ -1,6 +1,7 @@
 // app/src/main/java/com/tradeyourplan/ui/main/MainScreen.kt
 package com.tradeyourplan.ui.main
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tradeyourplan.ui.components.QuoteCard
@@ -86,6 +88,8 @@ private fun HomeTab(
     onRefresh: () -> Unit,
     onFavorite: (Long) -> Unit
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,11 +105,22 @@ private fun HomeTab(
                 )
             }
             is MainUiState.Success -> {
+                val quote = (uiState as MainUiState.Success).quote
                 QuoteCard(
-                    quote = (uiState as MainUiState.Success).quote,
+                    quote = quote,
                     modifier = Modifier.weight(1f),
-                    onFavoriteClick = { onFavorite((uiState as MainUiState.Success).quote.id) },
-                    onShareClick = { /* TODO */ }
+                    onFavoriteClick = { onFavorite(quote.id) },
+                    onShareClick = {
+                        val shareText = """${quote.content}
+
+—— 交易你的计划
+#交易智慧 #投资语录""".trimIndent()
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, shareText)
+                        }
+                        context.startActivity(Intent.createChooser(intent, "分享语录"))
+                    }
                 )
                 TYPButton(
                     onClick = onRefresh,
@@ -146,7 +161,7 @@ private fun BottomNavBar(
                     selectedTextColor = MaterialTheme.colorScheme.primary,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }

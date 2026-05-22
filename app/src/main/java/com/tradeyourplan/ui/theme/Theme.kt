@@ -15,7 +15,9 @@ import androidx.core.view.WindowCompat
 
 private val ProfessionalDarkColorScheme = darkColorScheme(
     primary = Primary,
+    primaryContainer = PrimaryContainer,
     onPrimary = OnPrimary,
+    onPrimaryContainer = OnPrimaryContainer,
     secondary = Secondary,
     tertiary = Accent,
     background = Background,
@@ -29,7 +31,9 @@ private val ProfessionalDarkColorScheme = darkColorScheme(
 
 private val WarmEncouragingColorScheme = lightColorScheme(
     primary = WarmPrimary,
-    onPrimary = OnPrimary,
+    primaryContainer = WarmPrimaryContainer,
+    onPrimary = WarmOnPrimary,
+    onPrimaryContainer = WarmOnPrimaryContainer,
     secondary = WarmSecondary,
     tertiary = WarmAccent,
     background = WarmBackground,
@@ -43,7 +47,9 @@ private val WarmEncouragingColorScheme = lightColorScheme(
 
 private val MinimalLightColorScheme = lightColorScheme(
     primary = LightPrimary,
-    onPrimary = OnPrimary,
+    primaryContainer = LightPrimaryContainer,
+    onPrimary = LightOnPrimary,
+    onPrimaryContainer = LightOnPrimaryContainer,
     secondary = LightSecondary,
     tertiary = LightAccent,
     background = LightBackground,
