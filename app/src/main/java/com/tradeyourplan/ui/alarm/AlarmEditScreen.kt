@@ -3,7 +3,6 @@ package com.tradeyourplan.ui.alarm
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -25,9 +24,8 @@ fun AlarmEditScreen(
     onBack: () -> Unit = {}
 ) {
     var selectedType by remember { mutableStateOf(AlarmType.FIXED) }
-    var timePickerState by remember {
-        mutableStateOf(TimePickerState(9, 30, is24Hour = true))
-    }
+    var selectedHour by remember { mutableIntStateOf(9) }
+    var selectedMinute by remember { mutableIntStateOf(0) }
     var startHour by remember { mutableIntStateOf(9) }
     var endHour by remember { mutableIntStateOf(15) }
     var targetPackage by remember { mutableStateOf("") }
@@ -73,17 +71,16 @@ fun AlarmEditScreen(
             when (selectedType) {
                 AlarmType.FIXED -> {
                     Text("提醒时间", style = MaterialTheme.typography.titleMedium)
-                    // 时间选择器（简化版，实际使用 TimePicker）
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         OutlinedTextField(
-                            value = timePickerState.hour.toString(),
+                            value = selectedHour.toString(),
                             onValueChange = {
                                 val hour = it.toIntOrNull()
                                 if (hour != null && hour in 0..23) {
-                                    timePickerState = timePickerState.copy(hour = hour)
+                                    selectedHour = hour
                                 }
                             },
                             label = { Text("时") },
@@ -92,11 +89,11 @@ fun AlarmEditScreen(
                         )
                         Text(":")
                         OutlinedTextField(
-                            value = timePickerState.minute.toString().padStart(2, '0'),
+                            value = selectedMinute.toString().padStart(2, '0'),
                             onValueChange = {
                                 val minute = it.toIntOrNull()
                                 if (minute != null && minute in 0..59) {
-                                    timePickerState = timePickerState.copy(minute = minute)
+                                    selectedMinute = minute
                                 }
                             },
                             label = { Text("分") },
@@ -180,8 +177,8 @@ fun AlarmEditScreen(
                     val alarm = Alarm(
                         id = alarmId,
                         type = selectedType,
-                        hour = if (selectedType == AlarmType.FIXED) timePickerState.hour else null,
-                        minute = if (selectedType == AlarmType.FIXED) timePickerState.minute else null,
+                        hour = if (selectedType == AlarmType.FIXED) selectedHour else null,
+                        minute = if (selectedType == AlarmType.FIXED) selectedMinute else null,
                         startHour = if (selectedType == AlarmType.RANDOM) startHour else null,
                         endHour = if (selectedType == AlarmType.RANDOM) endHour else null,
                         targetPackage = if (selectedType == AlarmType.EVENT_TRIGGERED) targetPackage else null,

@@ -40,7 +40,7 @@ fun QuoteCard(
         ) {
             // 语录内容
             Text(
-                text = ""${quote.content}"",
+                text = "“${quote.content}”",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
