@@ -1,20 +1,23 @@
 // app/src/main/java/com/tradeyourplan/ui/alarm/AlarmEditScreen.kt
 package com.tradeyourplan.ui.alarm
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tradeyourplan.data.model.Alarm
 import com.tradeyourplan.domain.model.*
 import com.tradeyourplan.ui.components.*
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,10 +30,16 @@ fun AlarmEditScreen(
     var selectedHour by remember { mutableIntStateOf(9) }
     var selectedMinute by remember { mutableIntStateOf(0) }
     var startHour by remember { mutableIntStateOf(9) }
+    var startMinute by remember { mutableIntStateOf(0) }
     var endHour by remember { mutableIntStateOf(15) }
+    var endMinute by remember { mutableIntStateOf(0) }
     var targetPackage by remember { mutableStateOf("") }
     var selectedRepeatMode by remember { mutableStateOf(RepeatMode.DAILY) }
     var selectedNotificationLevel by remember { mutableStateOf(NotificationLevel.NORMAL) }
+
+    // Time picker dialog states
+    var showStartTimePicker by remember { mutableStateOf(false) }
+    var showEndTimePicker by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -71,55 +80,31 @@ fun AlarmEditScreen(
             when (selectedType) {
                 AlarmType.FIXED -> {
                     Text("提醒时间", style = MaterialTheme.typography.titleMedium)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        OutlinedTextField(
-                            value = selectedHour.toString(),
-                            onValueChange = {
-                                val hour = it.toIntOrNull()
-                                if (hour != null && hour in 0..23) {
-                                    selectedHour = hour
-                                }
-                            },
-                            label = { Text("时") },
-                            modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                        Text(":")
-                        OutlinedTextField(
-                            value = selectedMinute.toString().padStart(2, '0'),
-                            onValueChange = {
-                                val minute = it.toIntOrNull()
-                                if (minute != null && minute in 0..59) {
-                                    selectedMinute = minute
-                                }
-                            },
-                            label = { Text("分") },
-                            modifier = Modifier.weight(1f),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                        )
-                    }
+                    TimeInputCard(
+                        hour = selectedHour,
+                        minute = selectedMinute,
+                        onClick = { showStartTimePicker = true }
+                    )
                 }
                 AlarmType.RANDOM -> {
                     Text("时间范围", style = MaterialTheme.typography.titleMedium)
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        OutlinedTextField(
-                            value = startHour.toString(),
-                            onValueChange = { startHour = it.toIntOrNull() ?: 9 },
-                            label = { Text("开始时") },
-                            modifier = Modifier.weight(1f)
+                        TimeInputCard(
+                            hour = startHour,
+                            minute = startMinute,
+                            label = "开始时间",
+                            modifier = Modifier.weight(1f),
+                            onClick = { showStartTimePicker = true }
                         )
-                        Text("~")
-                        OutlinedTextField(
-                            value = endHour.toString(),
-                            onValueChange = { endHour = it.toIntOrNull() ?: 15 },
-                            label = { Text("结束时") },
-                            modifier = Modifier.weight(1f)
+                        TimeInputCard(
+                            hour = endHour,
+                            minute = endMinute,
+                            label = "结束时间",
+                            modifier = Modifier.weight(1f),
+                            onClick = { showEndTimePicker = true }
                         )
                     }
                 }
@@ -180,7 +165,9 @@ fun AlarmEditScreen(
                         hour = if (selectedType == AlarmType.FIXED) selectedHour else null,
                         minute = if (selectedType == AlarmType.FIXED) selectedMinute else null,
                         startHour = if (selectedType == AlarmType.RANDOM) startHour else null,
+                        startMinute = if (selectedType == AlarmType.RANDOM) startMinute else null,
                         endHour = if (selectedType == AlarmType.RANDOM) endHour else null,
+                        endMinute = if (selectedType == AlarmType.RANDOM) endMinute else null,
                         targetPackage = if (selectedType == AlarmType.EVENT_TRIGGERED) targetPackage else null,
                         repeatMode = selectedRepeatMode,
                         notificationLevel = selectedNotificationLevel
@@ -195,6 +182,132 @@ fun AlarmEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 text = "保存"
             )
+        }
+    }
+
+    // Start Time Picker Dialog
+    if (showStartTimePicker) {
+        TimePickerDialog(
+            initialHour = if (selectedType == AlarmType.RANDOM) startHour else selectedHour,
+            initialMinute = if (selectedType == AlarmType.RANDOM) startMinute else selectedMinute,
+            onConfirm = { hour, minute ->
+                if (selectedType == AlarmType.RANDOM) {
+                    startHour = hour
+                    startMinute = minute
+                } else {
+                    selectedHour = hour
+                    selectedMinute = minute
+                }
+                showStartTimePicker = false
+            },
+            onDismiss = { showStartTimePicker = false }
+        )
+    }
+
+    // End Time Picker Dialog (for RANDOM type)
+    if (showEndTimePicker) {
+        TimePickerDialog(
+            initialHour = endHour,
+            initialMinute = endMinute,
+            onConfirm = { hour, minute ->
+                endHour = hour
+                endMinute = minute
+                showEndTimePicker = false
+            },
+            onDismiss = { showEndTimePicker = false }
+        )
+    }
+}
+
+@Composable
+private fun TimeInputCard(
+    hour: Int,
+    minute: Int,
+    label: String = "选择时间",
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(label, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = "%02d:%02d".format(hour, minute),
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+            Icon(
+                imageVector = Icons.Default.AccessTime,
+                contentDescription = "选择时间",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TimePickerDialog(
+    initialHour: Int,
+    initialMinute: Int,
+    onConfirm: (Int, Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val timePickerState = rememberTimePickerState(
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = true
+    )
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            shape = MaterialTheme.shapes.large,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "选择时间",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.height(16.dp))
+                TimePicker(state = timePickerState)
+                Spacer(Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text("取消")
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    TextButton(
+                        onClick = {
+                            onConfirm(timePickerState.hour, timePickerState.minute)
+                        }
+                    ) {
+                        Text("确定")
+                    }
+                }
+            }
         }
     }
 }

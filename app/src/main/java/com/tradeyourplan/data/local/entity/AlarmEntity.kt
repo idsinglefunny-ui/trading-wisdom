@@ -15,7 +15,9 @@ data class AlarmEntity(
     val hour: Int? = null,
     val minute: Int? = null,
     val startHour: Int? = null,
+    val startMinute: Int? = null,
     val endHour: Int? = null,
+    val endMinute: Int? = null,
     val targetPackage: String? = null,
     val delaySeconds: Int? = null,
     val repeatMode: String,      // RepeatMode.name
