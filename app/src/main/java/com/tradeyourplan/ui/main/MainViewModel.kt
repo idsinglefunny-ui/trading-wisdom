@@ -53,7 +53,10 @@ class MainViewModel @Inject constructor(
         )
 
     init {
-        loadRandomQuote()
+        // 监听quoteSource变化，自动重新加载
+        viewModelScope.launch {
+            quoteSource.collect { loadRandomQuote() }
+        }
     }
 
     fun loadRandomQuote() {

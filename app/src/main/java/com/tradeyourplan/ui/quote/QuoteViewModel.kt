@@ -3,7 +3,11 @@ package com.tradeyourplan.ui.quote
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import com.tradeyourplan.data.model.Quote
+import com.tradeyourplan.data.repository.SettingsRepository
 import com.tradeyourplan.domain.model.Category
 import com.tradeyourplan.domain.model.MarketType
 import com.tradeyourplan.domain.model.QuoteSource
@@ -20,15 +24,40 @@ class QuoteViewModel @Inject constructor(
     private val updateQuoteUseCase: UpdateQuoteUseCase,
     private val deleteQuoteUseCase: DeleteQuoteUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val settingsRepository: SettingsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val quotes: StateFlow<List<Quote>> = getQuotesUseCase()
+    // 观察语录来源设置
+    private val quoteSourceFilter: StateFlow<QuoteSource?> = settingsRepository.quoteSource
+        .map { sourceStr ->
+            when (sourceStr) {
+                "SYSTEM" -> QuoteSource.SYSTEM
+                "USER" -> QuoteSource.USER
+                else -> null // MIXED
+            }
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
-            initialValue = emptyList()
+            initialValue = null
         )
+
+    // 根据来源过滤语录
+    val quotes: StateFlow<List<Quote>> = combine(
+        getQuotesUseCase(),
+        quoteSourceFilter
+    ) { allQuotes, sourceFilter ->
+        if (sourceFilter == null) {
+            allQuotes // MIXED - 返回所有
+        } else {
+            allQuotes.filter { it.source == sourceFilter }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = emptyList()
+    )
 
     val favoriteQuotes: StateFlow<List<Quote>> = getQuotesUseCase.getFavoriteQuotes()
         .stateIn(
@@ -39,6 +68,17 @@ class QuoteViewModel @Inject constructor(
 
     private val _filterCategory = MutableStateFlow<Category?>(null)
     val filterCategory: StateFlow<Category?> = _filterCategory.asStateFlow()
+
+    var showAddDialog by mutableStateOf(false)
+        private set
+
+    fun showAddDialog() {
+        showAddDialog = true
+    }
+
+    fun hideAddDialog() {
+        showAddDialog = false
+    }
 
     fun setFilterCategory(category: Category?) {
         _filterCategory.value = category

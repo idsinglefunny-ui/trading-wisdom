@@ -64,7 +64,14 @@ private val MinimalLightColorScheme = lightColorScheme(
 enum class ThemeMode {
     PROFESSIONAL_DARK,
     WARM_ENCOURAGING,
-    MINIMAL_LIGHT
+    MINIMAL_LIGHT;
+
+    val displayName: String
+        get() = when (this) {
+            PROFESSIONAL_DARK -> "专业深色"
+            WARM_ENCOURAGING -> "温馨鼓励"
+            MINIMAL_LIGHT -> "极简浅色"
+        }
 }
 
 @Composable
