@@ -22,6 +22,9 @@ interface QuoteDao {
     @Query("SELECT * FROM quotes WHERE source = 'USER'")
     suspend fun getUserQuotes(): List<QuoteEntity>
 
+    @Query("SELECT COUNT(*) FROM quotes WHERE source = 'SYSTEM'")
+    suspend fun getSystemQuotesCount(): Int
+
     @Query("SELECT * FROM quotes WHERE category = :category")
     fun getQuotesByCategory(category: String): Flow<List<QuoteEntity>>
 
@@ -42,6 +45,9 @@ interface QuoteDao {
 
     @Query("DELETE FROM quotes WHERE id = :id")
     suspend fun deleteQuoteById(id: Long)
+
+    @Query("DELETE FROM quotes WHERE source = 'SYSTEM'")
+    suspend fun deleteSystemQuotes()
 
     @Query("UPDATE quotes SET isFavorite = NOT isFavorite WHERE id = :id")
     suspend fun toggleFavorite(id: Long)
