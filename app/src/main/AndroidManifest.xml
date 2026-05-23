@@ -32,11 +32,7 @@
         <receiver
             android:name=".notification.AlarmReceiver"
             android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tradeyourplan.ALARM_TRIGGERED" />
-            </intent-filter>
-        </receiver>
+            android:exported="false" />
 
     </application>
 

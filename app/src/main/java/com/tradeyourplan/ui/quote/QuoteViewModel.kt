@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import android.util.Log
 import com.tradeyourplan.data.model.Quote
 import com.tradeyourplan.data.repository.SettingsRepository
 import com.tradeyourplan.domain.model.Category
@@ -28,9 +29,14 @@ class QuoteViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    companion object {
+        private const val TAG = "QuoteViewModel"
+    }
+
     // 观察语录来源设置
     private val quoteSourceFilter: StateFlow<QuoteSource?> = settingsRepository.quoteSource
         .map { sourceStr ->
+            Log.d(TAG, "quoteSource setting: $sourceStr")
             when (sourceStr) {
                 "SYSTEM" -> QuoteSource.SYSTEM
                 "USER" -> QuoteSource.USER
@@ -48,11 +54,18 @@ class QuoteViewModel @Inject constructor(
         getQuotesUseCase(),
         quoteSourceFilter
     ) { allQuotes, sourceFilter ->
-        if (sourceFilter == null) {
+        Log.d(TAG, "combine: allQuotes.size=${allQuotes.size}, sourceFilter=$sourceFilter")
+        val result = if (sourceFilter == null) {
             allQuotes // MIXED - 返回所有
         } else {
-            allQuotes.filter { it.source == sourceFilter }
+            allQuotes.filter {
+                val matches = it.source == sourceFilter
+                Log.d(TAG, "Filter: quote.source=${it.source}, sourceFilter=$sourceFilter, matches=$matches")
+                matches
+            }
         }
+        Log.d(TAG, "Result: ${result.size} quotes")
+        result
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
