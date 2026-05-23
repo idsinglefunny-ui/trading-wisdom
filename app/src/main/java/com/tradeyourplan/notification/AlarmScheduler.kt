@@ -25,7 +25,6 @@ class AlarmScheduler(private val context: Context) {
         when (alarm.type) {
             AlarmType.FIXED -> scheduleFixedAlarm(alarm)
             AlarmType.RANDOM -> scheduleRandomAlarm(alarm)
-            AlarmType.EVENT_TRIGGERED -> scheduleEventAlarm(alarm)
         }
     }
 
@@ -95,10 +94,6 @@ class AlarmScheduler(private val context: Context) {
         } catch (e: SecurityException) {
             e.printStackTrace()
         }
-    }
-
-    private fun scheduleEventAlarm(alarm: Alarm) {
-        // Placeholder for event-based triggers
     }
 
     fun cancelAlarm(alarmId: Long) {

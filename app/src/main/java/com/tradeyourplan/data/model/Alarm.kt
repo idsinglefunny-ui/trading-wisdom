@@ -7,14 +7,12 @@ import com.tradeyourplan.domain.model.RepeatMode
 data class Alarm(
     val id: Long = 0,
     val type: AlarmType,
-    val hour: Int? = null,           // FIXED 类型用
-    val minute: Int? = null,         // FIXED 类型用
-    val startHour: Int? = null,      // RANDOM 类型用
-    val startMinute: Int? = null,    // RANDOM 类型用
-    val endHour: Int? = null,        // RANDOM 类型用
-    val endMinute: Int? = null,      // RANDOM 类型用
-    val targetPackage: String? = null, // EVENT_TRIGGERED 类型用
-    val delaySeconds: Int? = null,   // EVENT_TRIGGERED 类型用
+    val hour: Int? = null,
+    val minute: Int? = null,
+    val startHour: Int? = null,
+    val startMinute: Int? = null,
+    val endHour: Int? = null,
+    val endMinute: Int? = null,
     val repeatMode: RepeatMode = RepeatMode.DAILY,
     val isEnabled: Boolean = true,
     val notificationLevel: NotificationLevel = NotificationLevel.NORMAL
@@ -25,6 +23,5 @@ data class Alarm(
             AlarmType.RANDOM -> String.format("%02d:%02d-%02d:%02d",
                 startHour ?: 9, startMinute ?: 0,
                 endHour ?: 15, endMinute ?: 0)
-            AlarmType.EVENT_TRIGGERED -> "事件触发"
         }
 }

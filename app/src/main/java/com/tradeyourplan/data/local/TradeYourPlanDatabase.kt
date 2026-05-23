@@ -19,9 +19,36 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // SQLite不支持DROP COLUMN（3.35.0之前），重建表
+        db.execSQL("""
+            CREATE TABLE alarms_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                type TEXT NOT NULL,
+                hour INTEGER,
+                minute INTEGER,
+                startHour INTEGER,
+                startMinute INTEGER,
+                endHour INTEGER,
+                endMinute INTEGER,
+                repeatMode TEXT NOT NULL,
+                isEnabled INTEGER NOT NULL,
+                notificationLevel TEXT NOT NULL
+            )
+        """)
+        db.execSQL("""
+            INSERT INTO alarms_new (id, type, hour, minute, startHour, startMinute, endHour, endMinute, repeatMode, isEnabled, notificationLevel)
+            SELECT id, type, hour, minute, startHour, startMinute, endHour, endMinute, repeatMode, isEnabled, notificationLevel FROM alarms
+        """)
+        db.execSQL("DROP TABLE alarms")
+        db.execSQL("ALTER TABLE alarms_new RENAME TO alarms")
+    }
+}
+
 @Database(
     entities = [QuoteEntity::class, AlarmEntity::class, SettingEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class TradeYourPlanDatabase : RoomDatabase() {

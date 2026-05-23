@@ -33,7 +33,6 @@ fun AlarmEditScreen(
     var startMinute by remember { mutableIntStateOf(0) }
     var endHour by remember { mutableIntStateOf(15) }
     var endMinute by remember { mutableIntStateOf(0) }
-    var targetPackage by remember { mutableStateOf("") }
     var selectedRepeatMode by remember { mutableStateOf(RepeatMode.DAILY) }
     var selectedNotificationLevel by remember { mutableStateOf(NotificationLevel.NORMAL) }
 
@@ -108,18 +107,6 @@ fun AlarmEditScreen(
                         )
                     }
                 }
-                AlarmType.EVENT_TRIGGERED -> {
-                    Text("事件触发", style = MaterialTheme.typography.titleMedium)
-                    OutlinedTextField(
-                        value = targetPackage,
-                        onValueChange = { targetPackage = it },
-                        label = { Text("目标应用包名") },
-                        placeholder = { Text("例如: com.example.trading") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
-                    )
-                    Text("检测到指定应用启动后触发提醒", style = MaterialTheme.typography.bodySmall)
-                }
             }
 
             // 重复模式
@@ -168,7 +155,6 @@ fun AlarmEditScreen(
                         startMinute = if (selectedType == AlarmType.RANDOM) startMinute else null,
                         endHour = if (selectedType == AlarmType.RANDOM) endHour else null,
                         endMinute = if (selectedType == AlarmType.RANDOM) endMinute else null,
-                        targetPackage = if (selectedType == AlarmType.EVENT_TRIGGERED) targetPackage else null,
                         repeatMode = selectedRepeatMode,
                         notificationLevel = selectedNotificationLevel
                     )

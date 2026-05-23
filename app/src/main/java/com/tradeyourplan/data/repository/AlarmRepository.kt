@@ -59,8 +59,6 @@ class AlarmRepository @Inject constructor(
         startMinute = startMinute,
         endHour = endHour,
         endMinute = endMinute,
-        targetPackage = targetPackage,
-        delaySeconds = delaySeconds,
         repeatMode = RepeatMode.fromString(repeatMode) ?: RepeatMode.DAILY,
         isEnabled = isEnabled,
         notificationLevel = NotificationLevel.fromString(notificationLevel) ?: NotificationLevel.NORMAL
@@ -75,8 +73,6 @@ class AlarmRepository @Inject constructor(
         startMinute = startMinute,
         endHour = endHour,
         endMinute = endMinute,
-        targetPackage = targetPackage,
-        delaySeconds = delaySeconds,
         repeatMode = repeatMode.name,
         isEnabled = isEnabled,
         notificationLevel = notificationLevel.name

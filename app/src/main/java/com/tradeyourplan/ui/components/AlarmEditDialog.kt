@@ -32,7 +32,6 @@ fun AlarmEditDialog(
     var startMinute by remember { mutableIntStateOf(alarm?.startMinute ?: 0) }
     var endHour by remember { mutableIntStateOf(alarm?.endHour ?: 15) }
     var endMinute by remember { mutableIntStateOf(alarm?.endMinute ?: 0) }
-    var targetPackage by remember { mutableStateOf(alarm?.targetPackage ?: "") }
     var selectedRepeatMode by remember { mutableStateOf(alarm?.repeatMode ?: RepeatMode.DAILY) }
     var selectedNotificationLevel by remember { mutableStateOf(alarm?.notificationLevel ?: NotificationLevel.NORMAL) }
 
@@ -121,25 +120,6 @@ fun AlarmEditDialog(
                             }
                         }
                     }
-                    AlarmType.EVENT_TRIGGERED -> {
-                        item {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text("事件触发", style = MaterialTheme.typography.titleMedium)
-                                OutlinedTextField(
-                                    value = targetPackage,
-                                    onValueChange = { targetPackage = it },
-                                    label = { Text("目标应用包名") },
-                                    placeholder = { Text("例如: com.example.trading") },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    singleLine = true
-                                )
-                                Text(
-                                    "检测到指定应用启动后触发提醒",
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                        }
-                    }
                 }
 
                 // 重复模式
@@ -195,7 +175,6 @@ fun AlarmEditDialog(
                         startMinute = if (selectedType == AlarmType.RANDOM) startMinute else null,
                         endHour = if (selectedType == AlarmType.RANDOM) endHour else null,
                         endMinute = if (selectedType == AlarmType.RANDOM) endMinute else null,
-                        targetPackage = if (selectedType == AlarmType.EVENT_TRIGGERED) targetPackage else null,
                         repeatMode = selectedRepeatMode,
                         notificationLevel = selectedNotificationLevel,
                         isEnabled = alarm?.isEnabled ?: true

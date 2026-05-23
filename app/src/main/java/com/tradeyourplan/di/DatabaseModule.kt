@@ -4,6 +4,7 @@ package com.tradeyourplan.di
 import android.content.Context
 import androidx.room.Room
 import com.tradeyourplan.data.local.MIGRATION_1_2
+import com.tradeyourplan.data.local.MIGRATION_2_3
 import com.tradeyourplan.data.local.TradeYourPlanDatabase
 import dagger.Module
 import dagger.Provides
@@ -26,7 +27,7 @@ object DatabaseModule {
             TradeYourPlanDatabase::class.java,
             "tradeyourplan.db"
         )
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
             .fallbackToDestructiveMigration()
             .build()
     }
