@@ -67,7 +67,7 @@ class MainViewModel @Inject constructor(
             _uiState.value = if (quote != null) {
                 MainUiState.Success(quote)
             } else {
-                MainUiState.Empty
+                MainUiState.Empty("暂无语录，请添加语录或检查应用设置")
             }
         }
     }
@@ -84,5 +84,5 @@ class MainViewModel @Inject constructor(
 sealed class MainUiState {
     object Loading : MainUiState()
     data class Success(val quote: Quote) : MainUiState()
-    object Empty : MainUiState()
+    data class Empty(val message: String = "暂无语录") : MainUiState()
 }

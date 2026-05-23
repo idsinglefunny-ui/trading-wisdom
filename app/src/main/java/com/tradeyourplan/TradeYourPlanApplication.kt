@@ -2,6 +2,7 @@
 package com.tradeyourplan
 
 import android.app.Application
+import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +20,15 @@ class TradeYourPlanApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("TradeYourPlanApp", "Application onCreate started")
         applicationScope.launch {
-            quotesInitializer.initializeIfNeeded()
+            try {
+                Log.d("TradeYourPlanApp", "About to initialize quotes")
+                quotesInitializer.initializeIfNeeded()
+                Log.d("TradeYourPlanApp", "Quotes initialization completed")
+            } catch (e: Exception) {
+                Log.e("TradeYourPlanApp", "Failed to initialize quotes", e)
+            }
         }
     }
 }

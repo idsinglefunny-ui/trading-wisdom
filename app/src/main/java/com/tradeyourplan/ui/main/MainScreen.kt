@@ -138,7 +138,7 @@ private fun HomeTab(
                 )
             }
             is MainUiState.Empty -> {
-                Text("暂无语录，请先添加语录")
+                Text((uiState as MainUiState.Empty).message)
             }
         }
     }
