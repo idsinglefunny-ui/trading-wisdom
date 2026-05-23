@@ -100,45 +100,51 @@ private fun HomeTab(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    Column(
-        modifier = modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
         when (uiState) {
             is MainUiState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.primary
-                )
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             is MainUiState.Success -> {
                 val quote = (uiState as MainUiState.Success).quote
-                QuoteCard(
-                    quote = quote,
-                    modifier = Modifier.weight(1f),
-                    onFavoriteClick = { viewModel.toggleFavorite(quote.id) },
-                    onShareClick = {
-                        val shareText = """${quote.content}
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    QuoteCard(
+                        quote = quote,
+                        onFavoriteClick = { viewModel.toggleFavorite(quote.id) },
+                        onShareClick = {
+                            val shareText = """${quote.content}
 
 —— 交易你的计划
 #交易智慧 #投资语录""".trimIndent()
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, shareText)
+                            val intent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, shareText)
+                            }
+                            context.startActivity(Intent.createChooser(intent, "分享语录"))
                         }
-                        context.startActivity(Intent.createChooser(intent, "分享语录"))
-                    }
-                )
-                TYPButton(
-                    onClick = { viewModel.loadRandomQuote() },
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = { Icon(Icons.Default.Refresh, null) },
-                    text = "换一换"
-                )
+                    )
+                    Spacer(Modifier.height(24.dp))
+                    TYPButton(
+                        onClick = { viewModel.loadRandomQuote() },
+                        modifier = Modifier.fillMaxWidth(0.6f),
+                        icon = { Icon(Icons.Default.Refresh, null) },
+                        text = "换一换"
+                    )
+                }
             }
             is MainUiState.Empty -> {
-                Text((uiState as MainUiState.Empty).message)
+                Text(
+                    (uiState as MainUiState.Empty).message,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
