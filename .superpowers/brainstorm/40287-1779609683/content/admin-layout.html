@@ -1,0 +1,102 @@
+<h2>管理后台布局</h2>
+<p class="subtitle">语录管理的界面设计</p>
+
+<div class="cards">
+  <div class="card" data-choice="sidebar" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#0F172A;color:#F8FAFC;border-radius:8px;height:200px;overflow:hidden;display:flex;">
+        <div style="width:180px;background:#1E293B;padding:16px;border-right:1px solid #334155;">
+          <div style="font-weight:700;margin-bottom:20px;font-size:14px;">管理后台</div>
+          <div style="background:#3B82F6;padding:10px 12px;border-radius:6px;font-size:13px;margin-bottom:8px;">📝 语录管理</div>
+          <div style="padding:10px 12px;font-size:13px;color:#94A3B8;">📊 统计</div>
+          <div style="padding:10px 12px;font-size:13px;color:#94A3B8;">⚙️ 设置</div>
+        </div>
+        <div style="flex:1;padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <span style="font-size:14px;font-weight:600;">语录列表</span>
+            <button style="background:#3B82F6;border:none;padding:8px 16px;border-radius:6px;font-size:12px;">+ 新增</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:#1E293B;padding:10px;border-radius:6px;font-size:12px;display:flex;justify-content:space-between;">
+              <span>"止损是交易的第一课"</span>
+              <span style="color:#94A3B8;">编辑 删除</span>
+            </div>
+            <div style="background:#1E293B;padding:10px;border-radius:6px;font-size:12px;display:flex;justify-content:space-between;">
+              <span>"计划你的交易..."</span>
+              <span style="color:#94A3B8;">编辑 删除</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>侧边栏布局</h3>
+      <p>左侧导航 + 右侧内容，传统后台风格</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="topnav" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#0F172A;color:#F8FAFC;padding:16px;border-radius:8px;height:200px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #334155;">
+          <div style="font-weight:700;font-size:14px;">管理后台</div>
+          <div style="display:flex;gap:16px;font-size:13px;">
+            <span style="color:#3B82F6;">语录管理</span>
+            <span style="color:#94A3B8;">统计</span>
+            <span style="color:#94A3B8;">设置</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:13px;font-weight:600;">语录列表</span>
+          <button style="background:#3B82F6;border:none;padding:8px 16px;border-radius:6px;font-size:12px;">+ 新增</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="background:#1E293B;padding:10px;border-radius:6px;font-size:12px;display:flex;justify-content:space-between;">
+            <span>"止损是交易的第一课"</span>
+            <span style="color:#94A3B8;">编辑 删除</span>
+          </div>
+          <div style="background:#1E293B;padding:10px;border-radius:6px;font-size:12px;display:flex;justify-content:space-between;">
+            <span>"计划你的交易..."</span>
+            <span style="color:#94A3B8;">编辑 删除</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>顶部导航布局</h3>
+      <p>简洁的顶部导航，更现代</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="minimal" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#0F172A;color:#F8FAFC;padding:20px;border-radius:8px;height:200px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div style="font-size:16px;font-weight:600;">语录管理</div>
+          <button style="background:#3B82F6;border:none;padding:10px 20px;border-radius:6px;font-size:13px;">+ 新增语录</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:#1E293B;padding:14px;border-radius:8px;display:flex;align-items:center;gap:12px;">
+            <div style="flex:1;font-size:13px;">"止损是交易的第一课"</div>
+            <span style="background:#0EA5E9;padding:4px 10px;border-radius:4px;font-size:11px;">风控</span>
+            <span style="color:#64748B;font-size:12px;">编辑 · 删除</span>
+          </div>
+          <div style="background:#1E293B;padding:14px;border-radius:8px;display:flex;align-items:center;gap:12px;">
+            <div style="flex:1;font-size:13px;">"计划你的交易，交易你的计划"</div>
+            <span style="background:#10B981;padding:4px 10px;border-radius:4px;font-size:11px;">纪律</span>
+            <span style="color:#64748B;font-size:12px;">编辑 · 删除</span>
+          </div>
+          <div style="background:#1E293B;padding:14px;border-radius:8px;display:flex;align-items:center;gap:12px;">
+            <div style="flex:1;font-size:13px;">"不要让情绪左右你的交易决策"</div>
+            <span style="background:#F59E0B;padding:4px 10px;border-radius:4px;font-size:11px;">心态</span>
+            <span style="color:#64748B;font-size:12px;">编辑 · 删除</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>极简布局</h3>
+      <p>无多余装饰，专注内容管理</p>
+    </div>
+  </div>
+</div>

@@ -7,15 +7,16 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tradeyourplan.data.local.dao.QuoteDao
 import com.tradeyourplan.data.local.entity.QuoteEntity
-import com.tradeyourplan.domain.model.Category
-import com.tradeyourplan.domain.model.MarketType
-import com.tradeyourplan.domain.model.QuoteSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * 语录初始化器 - 在线优先模式
+ * 仅在本地无数据时加载内置语录作为离线降级方案
+ */
 @Singleton
 class QuotesInitializer @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -29,21 +30,21 @@ class QuotesInitializer @Inject constructor(
             val existingSystemQuotes = quoteDao.getSystemQuotes()
             Log.d(TAG, "Existing system quotes count: ${existingSystemQuotes.size}")
 
-            if (existingSystemQuotes.size < 50) {
-                Log.d(TAG, "System quotes count less than 50, loading from assets")
-                loadQuotesFromAssets(existingSystemQuotes)
+            // 只有本地完全没数据时，才加载内置语录
+            if (existingSystemQuotes.isEmpty()) {
+                Log.d(TAG, "No local quotes found, loading built-in quotes as fallback")
+                loadQuotesFromAssets()
             } else {
-                Log.d(TAG, "System quotes exist (${existingSystemQuotes.size}), skipping load")
+                Log.d(TAG, "Local quotes exist (${existingSystemQuotes.size}), app will use online API")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "Error checking existing quotes", e)
-            loadQuotesFromAssets(emptyList())
+            Log.e(TAG, "Error initializing quotes", e)
         }
     }
 
-    private suspend fun loadQuotesFromAssets(existingQuotes: List<QuoteEntity>) {
+    private suspend fun loadQuotesFromAssets() {
         try {
-            Log.d(TAG, "Loading quotes from assets")
+            Log.d(TAG, "Loading built-in quotes from assets")
             val json = context.assets.open("quotes.json").bufferedReader().use { it.readText() }
             Log.d(TAG, "JSON content length: ${json.length}")
 
@@ -51,19 +52,7 @@ class QuotesInitializer @Inject constructor(
             val quoteDtos: List<QuoteDto> = gson.fromJson(json, quoteType)
             Log.d(TAG, "Parsed ${quoteDtos.size} quotes from JSON")
 
-            // 直接删除，避免实体类型转换问题
-            if (existingQuotes.isNotEmpty()) {
-                try {
-                    existingQuotes.forEach {
-                        quoteDao.deleteQuoteById(it.id)
-                    }
-                    Log.d(TAG, "Deleted ${existingQuotes.size} existing system quotes")
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error deleting existing quotes", e)
-                }
-            }
-
-            // 插入新的系统语录
+            // 插入内置语录作为离线降级方案
             val entities = quoteDtos.map { dto ->
                 QuoteEntity(
                     content = dto.content,
@@ -74,13 +63,13 @@ class QuotesInitializer @Inject constructor(
             }
 
             quoteDao.insertQuotes(entities)
-            Log.d(TAG, "Inserted ${entities.size} quotes to database")
+            Log.d(TAG, "Inserted ${entities.size} built-in quotes to database")
 
             // 验证插入
             val verifyCount = quoteDao.getSystemQuotes().size
             Log.d(TAG, "Verification: system quotes count after insert: $verifyCount")
         } catch (e: Exception) {
-            Log.e(TAG, "Error loading quotes from assets", e)
+            Log.e(TAG, "Error loading built-in quotes from assets", e)
         }
     }
 

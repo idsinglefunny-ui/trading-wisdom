@@ -62,12 +62,12 @@ class MainViewModel @Inject constructor(
     fun loadRandomQuote() {
         viewModelScope.launch {
             _uiState.value = MainUiState.Loading
-            val sourceFilter = quoteSource.value
-            val quote = getRandomQuoteUseCase(sourceFilter)
+            // 使用在线优先模式获取随机语录
+            val quote = getRandomQuoteUseCase(useOnline = true)
             _uiState.value = if (quote != null) {
                 MainUiState.Success(quote)
             } else {
-                MainUiState.Empty("暂无语录，请添加语录或检查应用设置")
+                MainUiState.Empty("暂无语录，请检查网络连接或稍后重试")
             }
         }
     }

@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* Material 3 Professional Dark Theme */
+@theme inline {
+  /* Primary Colors */
+  --color-primary: #3B82F6;
+  --color-primary-rgb: 59, 130, 246;
+  --color-primary-foreground: #FFFFFF;
+
+  /* Background Colors - Dark Theme */
+  --color-background: #0F172A;
+  --color-foreground: #F8FAFC;
+
+  /* Surface Colors */
+  --color-surface: #1E293B;
+  --color-surface-variant: #334155;
+  --color-surface-container: #1E293B;
+  --color-surface-container-low: #263347;
+  --color-surface-container-high: #334155;
+
+  /* Border Color */
+  --color-border: #334155;
+  --color-border-strong: #475569;
+
+  /* Semantic Colors */
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
+
+  /* Category Colors */
+  --color-risk-mgmt: #0EA5E9;
+  --color-risk-mgmt-rgb: 14, 165, 233;
+  --color-mindset: #F59E0B;
+  --color-mindset-rgb: 245, 158, 11;
+  --color-discipline: #10B981;
+  --color-discipline-rgb: 16, 185, 129;
+  --color-technical: #8B5CF6;
+  --color-technical-rgb: 139, 92, 246;
+
+  /* Neutral Variants */
+  --color-muted: #334155;
+  --color-muted-foreground: #94A3B8;
+  --color-accent: #3B82F6;
+  --color-accent-foreground: #FFFFFF;
+
+  /* Card Colors */
+  --color-card: #1E293B;
+  --color-card-foreground: #F8FAFC;
+
+  /* Input Colors */
+  --color-input: #1E293B;
+  --color-ring: #3B82F6;
+
+  /* Secondary Colors */
+  --color-secondary: #475569;
+  --color-secondary-foreground: #F8FAFC;
+
+  /* Outline */
+  --color-outline: #475569;
+  --color-outline-variant: #334155;
+
+  /* Additional Utility Colors */
+  --color-success: #10B981;
+  --color-success-rgb: 16, 185, 129;
+  --color-warning: #F59E0B;
+  --color-info: #0EA5E9;
+  --color-error: #DC2626;
+}
+
+/* Base Styles */
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Material 3 Surface Elevation */
+.surface-elevation-1 {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.surface-elevation-2 {
+  background: var(--color-surface-variant);
+  border: 1px solid var(--color-border-strong);
+}
+
+.surface-elevation-3 {
+  background: var(--color-surface-container-high);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Category Badge Styles */
+.category-badge-risk-mgmt {
+  background: rgba(var(--color-risk-mgmt-rgb), 0.15);
+  color: var(--color-risk-mgmt);
+  border: 1px solid rgba(var(--color-risk-mgmt-rgb), 0.3);
+}
+
+.category-badge-mindset {
+  background: rgba(var(--color-mindset-rgb), 0.15);
+  color: var(--color-mindset);
+  border: 1px solid rgba(var(--color-mindset-rgb), 0.3);
+}
+
+.category-badge-discipline {
+  background: rgba(var(--color-discipline-rgb), 0.15);
+  color: var(--color-discipline);
+  border: 1px solid rgba(var(--color-discipline-rgb), 0.3);
+}
+
+.category-badge-technical {
+  background: rgba(var(--color-technical-rgb), 0.15);
+  color: var(--color-technical);
+  border: 1px solid rgba(var(--color-technical-rgb), 0.3);
+}
+
+/* Material 3 Button Styles */
+.button-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  border-radius: 20px;
+  padding: 10px 24px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.button-primary:hover {
+  opacity: 0.9;
+}
+
+.button-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border-radius: 20px;
+  padding: 10px 24px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.button-ghost:hover {
+  background: rgba(var(--color-primary-rgb), 0.1);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+/* Focus Ring for Accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}

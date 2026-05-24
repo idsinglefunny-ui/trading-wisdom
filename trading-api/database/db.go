@@ -21,7 +21,7 @@ func NewQuoteDB(db *sql.DB) *QuoteDB {
 
 // GetAll 获取所有语录（带筛选和分页）
 func (q *QuoteDB) GetAll(category models.Category, marketType models.MarketType, source models.QuoteSource, limit, offset int) ([]models.Quote, int, error) {
-	query := "SELECT id, content, category, market_type, source, is_favorite, view_count, created_at, updated_at FROM quotes WHERE 1=1"
+	query := "SELECT id, content, category, market_type, source, is_favorite, view_count, UNIX_TIMESTAMP(created_at) * 1000 as created_at, UNIX_TIMESTAMP(updated_at) * 1000 as updated_at FROM quotes WHERE 1=1"
 	args := []interface{}{}
 	countQuery := "SELECT COUNT(*) FROM quotes WHERE 1=1"
 
@@ -74,7 +74,7 @@ func (q *QuoteDB) GetAll(category models.Category, marketType models.MarketType,
 
 // GetRandom 获取随机语录
 func (q *QuoteDB) GetRandom(category models.Category, marketType models.MarketType) (*models.Quote, error) {
-	query := `SELECT id, content, category, market_type, source, is_favorite, view_count, created_at, updated_at
+	query := `SELECT id, content, category, market_type, source, is_favorite, view_count, UNIX_TIMESTAMP(created_at) * 1000 as created_at, UNIX_TIMESTAMP(updated_at) * 1000 as updated_at
               FROM quotes WHERE 1=1`
 	args := []interface{}{}
 
@@ -104,7 +104,9 @@ func (q *QuoteDB) GetRandom(category models.Category, marketType models.MarketTy
 	}
 
 	// 增加浏览次数
-	q.db.Exec("UPDATE quotes SET view_count = view_count + 1 WHERE id = ?", quote.ID)
+	if _, err := q.db.Exec("UPDATE quotes SET view_count = view_count + 1 WHERE id = ?", quote.ID); err != nil {
+		return nil, fmt.Errorf("failed to update view count: %w", err)
+	}
 
 	return &quote, nil
 }
@@ -113,7 +115,7 @@ func (q *QuoteDB) GetRandom(category models.Category, marketType models.MarketTy
 func (q *QuoteDB) GetByID(id int64) (*models.Quote, error) {
 	var quote models.Quote
 	err := q.db.QueryRow(
-		"SELECT id, content, category, market_type, source, is_favorite, view_count, created_at, updated_at FROM quotes WHERE id = ?",
+		"SELECT id, content, category, market_type, source, is_favorite, view_count, UNIX_TIMESTAMP(created_at) * 1000 as created_at, UNIX_TIMESTAMP(updated_at) * 1000 as updated_at FROM quotes WHERE id = ?",
 		id,
 	).Scan(
 		&quote.ID, &quote.Content, &quote.Category, &quote.MarketType,
@@ -134,7 +136,7 @@ func (q *QuoteDB) GetByID(id int64) (*models.Quote, error) {
 // GetSystemQuotes 获取系统预设语录
 func (q *QuoteDB) GetSystemQuotes() ([]models.Quote, error) {
 	rows, err := q.db.Query(
-		"SELECT id, content, category, market_type, source, is_favorite, view_count, created_at, updated_at FROM quotes WHERE source = 'SYSTEM'",
+		"SELECT id, content, category, market_type, source, is_favorite, view_count, UNIX_TIMESTAMP(created_at) * 1000 as created_at, UNIX_TIMESTAMP(updated_at) * 1000 as updated_at FROM quotes WHERE source = 'SYSTEM'",
 	)
 	if err != nil {
 		return nil, err
@@ -199,7 +201,10 @@ func (q *QuoteDB) Update(id int64, req models.UpdateQuoteRequest) error {
 		return err
 	}
 
-	rows, _ := result.RowsAffected()
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
 	if rows == 0 {
 		return sql.ErrNoRows
 	}
@@ -214,7 +219,10 @@ func (q *QuoteDB) Delete(id int64) error {
 		return err
 	}
 
-	rows, _ := result.RowsAffected()
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
 	if rows == 0 {
 		return sql.ErrNoRows
 	}
@@ -254,7 +262,7 @@ func (q *QuoteDB) BatchCreate(quotes []models.CreateQuoteRequest) ([]models.Quot
 // GetAdminPasswordHash 获取管理员密码哈希
 func (q *QuoteDB) GetAdminPasswordHash() (string, error) {
 	var hash string
-	err := q.db.QueryRow("SELECT admin_password_hash FROM admin_config WHERE id = 1").Scan(&hash)
+	err := q.db.QueryRow("SELECT password_hash FROM admin_config WHERE id = 1").Scan(&hash)
 	return hash, err
 }
 

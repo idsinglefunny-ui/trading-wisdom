@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -80,7 +81,7 @@ fun QuoteCard(
 
             Spacer(Modifier.height(16.dp))
 
-            // 操作按钮
+            // 操作按钮 - 居中排列：分享、收藏、查看次数
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
@@ -100,7 +101,34 @@ fun QuoteCard(
                         tint = if (quote.isFavorite) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+                // 查看次数
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(start = 8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Visibility,
+                        contentDescription = "查看次数",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = formatViewCount(quote.viewCount),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
+    }
+}
+
+private fun formatViewCount(count: Int): String {
+    return when {
+        count >= 10000 -> "${count / 10000}万"
+        count >= 1000 -> "${count / 1000}.${(count % 1000) / 100}k"
+        else -> count.toString()
     }
 }

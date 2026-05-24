@@ -9,6 +9,7 @@ import (
 
     _ "github.com/go-sql-driver/mysql"
     "github.com/gorilla/mux"
+    "trading-api/handlers"
 )
 
 func main() {
@@ -32,20 +33,20 @@ func main() {
     r := mux.NewRouter()
 
     // 公共 API
-    r.HandleFunc("/api/quotes", handleGetQuotes(db)).Methods("GET")
-    r.HandleFunc("/api/quotes/random", handleGetRandomQuote(db)).Methods("GET")
-    r.HandleFunc("/api/quotes/{id}", handleGetQuoteByID(db)).Methods("GET")
-    r.HandleFunc("/api/quotes/categories", handleGetCategories).Methods("GET")
-    r.HandleFunc("/api/quotes/market-types", handleGetMarketTypes).Methods("GET")
-    r.HandleFunc("/api/system/quotes", handleGetSystemQuotes(db)).Methods("GET")
+    r.HandleFunc("/api/quotes", handlers.HandleGetQuotes(db)).Methods("GET")
+    r.HandleFunc("/api/quotes/random", handlers.HandleGetRandomQuote(db)).Methods("GET")
+    r.HandleFunc("/api/quotes/categories", handlers.HandleGetCategories).Methods("GET")
+    r.HandleFunc("/api/quotes/market-types", handlers.HandleGetMarketTypes).Methods("GET")
+    r.HandleFunc("/api/quotes/{id}", handlers.HandleGetQuoteByID(db)).Methods("GET")
+    r.HandleFunc("/api/system/quotes", handlers.HandleGetSystemQuotes(db)).Methods("GET")
 
     // 管理 API
-    r.HandleFunc("/api/admin/login", handleAdminLogin(db)).Methods("POST")
-    r.HandleFunc("/api/admin/quotes", authMiddleware(handleAdminGetQuotes(db), db)).Methods("GET")
-    r.HandleFunc("/api/admin/quotes", authMiddleware(handleAdminCreateQuote(db), db)).Methods("POST")
-    r.HandleFunc("/api/admin/quotes/{id}", authMiddleware(handleAdminUpdateQuote(db), db)).Methods("PUT")
-    r.HandleFunc("/api/admin/quotes/{id}", authMiddleware(handleAdminDeleteQuote(db), db)).Methods("DELETE")
-    r.HandleFunc("/api/admin/quotes/batch", authMiddleware(handleAdminBatchImport(db), db)).Methods("POST")
+    r.HandleFunc("/api/admin/login", handlers.HandleAdminLogin(db)).Methods("POST")
+    r.HandleFunc("/api/admin/quotes", handlers.HandleAdminGetQuotes(db)).Methods("GET")
+    r.HandleFunc("/api/admin/quotes", handlers.HandleAdminCreateQuote(db)).Methods("POST")
+    r.HandleFunc("/api/admin/quotes/{id}", handlers.HandleAdminUpdateQuote(db)).Methods("PUT")
+    r.HandleFunc("/api/admin/quotes/{id}", handlers.HandleAdminDeleteQuote(db)).Methods("DELETE")
+    r.HandleFunc("/api/admin/quotes/batch", handlers.HandleAdminBatchImport(db)).Methods("POST")
 
     // 启动服务器
     port := os.Getenv("PORT")

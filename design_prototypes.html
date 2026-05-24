@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分享卡片设计 - 新布局规则</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1a1a1a;
+            padding: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        h1 {
+            color: #E6EDF3;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #8B949E;
+            text-align: center;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+        }
+        .prototype {
+            background: #2a2a2a;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .prototype-label {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .card {
+            width: 270px;
+            height: 480px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0D1117 0%, #161B22 100%);
+        }
+
+        .brand {
+            position: absolute;
+            top: 36px;
+            left: 36px;
+            color: #58A6FF;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .brand-line {
+            position: absolute;
+            top: 54px;
+            left: 36px;
+            width: 60px;
+            height: 1px;
+            background: #58A6FF;
+            opacity: 0.5;
+        }
+        .quote-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+        }
+        .quote-line {
+            font-size: 24px;
+            line-height: 40px;
+            letter-spacing: 0.02em;
+            color: #E6EDF3;
+        }
+        .bracket {
+            color: #58A6FF;
+        }
+        .align-center {
+            text-align: center;
+        }
+        .align-left {
+            text-align: left;
+        }
+        .align-right {
+            text-align: right;
+        }
+        .attribution {
+            position: absolute;
+            bottom: 36px;
+            left: 36px;
+            color: #8B949E;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+        .qr-section {
+            position: absolute;
+            bottom: 36px;
+            right: 36px;
+        }
+        .scan-text {
+            text-align: right;
+            color: #8B949E;
+            font-size: 8px;
+            margin-bottom: 6px;
+        }
+        .qr {
+            width: 30px;
+            height: 30px;
+            background: #161B22;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #30363D;
+        }
+        .qr-inner {
+            width: 24px;
+            height: 24px;
+            background: repeating-linear-gradient(
+                90deg,
+                #58A6FF 0px, #58A6FF 2px,
+                transparent 2px, transparent 4px
+            );
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <h1>分享卡片设计 - 新布局规则</h1>
+    <p class="subtitle">
+        规则：1行居中 | 2行：左/右对齐 | 3行及以上：全部居中
+    </p>
+    <div class="container">
+
+        <!-- 情况1: 1行以内 -->
+        <div class="prototype">
+            <div class="prototype-label">情况1: 1行 (居中)</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-center">
+                        <span class="bracket">「</span>顺势而为<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 情况2: 2行 -->
+        <div class="prototype">
+            <div class="prototype-label">情况2: 2行 (左/右)</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-left">
+                        <span class="bracket">「</span>市场永远是对的
+                    </div>
+                    <div class="quote-line align-right">
+                        错的只是你<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 情况3: 3行及以上 - 全部居中 -->
+        <div class="prototype">
+            <div class="prototype-label">情况3: 3行 (全部居中)</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-center">
+                        <span class="bracket">「</span>在市场上生存
+                    </div>
+                    <div class="quote-line align-center">
+                        第一要义是风控
+                    </div>
+                    <div class="quote-line align-center">
+                        其次才是盈利<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 情况4: 4行及以上 - 全部居中 -->
+        <div class="prototype">
+            <div class="prototype-label">情况4: 4行 (全部居中)</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-center">
+                        <span class="bracket">「</span>一个成功的交易者
+                    </div>
+                    <div class="quote-line align-center">
+                        必须具备三种素质
+                    </div>
+                    <div class="quote-line align-center">
+                        冷静的头脑和严格纪律
+                    </div>
+                    <div class="quote-line align-center">
+                        以及过人的耐心<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 更多例子: 4字短句 -->
+        <div class="prototype">
+            <div class="prototype-label">例子: 4字短句</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-center">
+                        <span class="bracket">「</span>知行合一<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 更多例子: 8字 -->
+        <div class="prototype">
+            <div class="prototype-label">例子: 8字</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-center">
+                        <span class="bracket">「</span>让利润奔跑<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 更多例子: 刚好两行 -->
+        <div class="prototype">
+            <div class="prototype-label">例子: 刚好两行</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-left">
+                        <span class="bracket">「</span>截断亏损
+                    </div>
+                    <div class="quote-line align-right">
+                        让利润奔跑<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 更多例子: 5行 -->
+        <div class="prototype">
+            <div class="prototype-label">例子: 5行长句 (全部居中)</div>
+            <div class="card">
+                <div class="brand">交易智慧</div>
+                <div class="brand-line"></div>
+                <div class="quote-container">
+                    <div class="quote-line align-center">
+                        <span class="bracket">「</span>交易不是预测未来
+                    </div>
+                    <div class="quote-line align-center">
+                        而是应对当下
+                    </div>
+                    <div class="quote-line align-center">
+                        在不确定中寻找确定
+                    </div>
+                    <div class="quote-line align-center">
+                        在波动中保持冷静
+                    </div>
+                    <div class="quote-line align-center">
+                        坚持自己的交易计划<span class="bracket">」</span>
+                    </div>
+                </div>
+                <div class="attribution">—— 交易你的计划</div>
+                <div class="qr-section">
+                    <div class="scan-text">扫码下载</div>
+                    <div class="qr"><div class="qr-inner"></div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <p style="color: #8B949E; text-align: center; margin-top: 40px;">
+        请确认这个布局规则是否符合预期
+    </p>
+</body>
+</html>

@@ -1,20 +1,29 @@
 package com.tradeyourplan.notification
 
+import android.app.KeyguardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -22,10 +31,15 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.lifecycleScope
+import com.tradeyourplan.data.repository.QuoteRepository
 import com.tradeyourplan.ui.theme.ThemeMode
 import com.tradeyourplan.ui.theme.TradeYourPlanTheme
+import com.tradeyourplan.utils.ShareHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,6 +47,13 @@ class QuoteReminderActivity : ComponentActivity() {
 
     @Inject
     lateinit var dataStore: DataStore<Preferences>
+
+    @Inject
+    lateinit var quoteRepository: QuoteRepository
+
+    private val shareLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        // Share completed
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +99,10 @@ class QuoteReminderActivity : ComponentActivity() {
             TradeYourPlanTheme(themeMode = themeMode) {
                 QuoteReminderScreen(
                     quoteText = quoteText,
-                    onDismiss = { finish() }
+                    themeMode = themeMode,
+                    onDismiss = { finish() },
+                    onFavoriteClick = { toggleFavorite(quoteText) },
+                    onShareClick = { shareQuote(quoteText, themeMode) }
                 )
             }
         }
@@ -99,6 +123,49 @@ class QuoteReminderActivity : ComponentActivity() {
         }
     }
 
+    private fun toggleFavorite(quoteText: String) {
+        lifecycleScope.launch {
+            val quote = quoteRepository.getQuoteByContent(quoteText)
+            quote?.let {
+                quoteRepository.toggleFavorite(it.id)
+            }
+        }
+    }
+
+    private fun shareQuote(quoteText: String, themeMode: ThemeMode) {
+        lifecycleScope.launch {
+            try {
+                // Step 1: Request dismiss keyguard if on lock screen
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+                    if (keyguardManager.isKeyguardLocked) {
+                        // Request dismiss keyguard
+                        keyguardManager.requestDismissKeyguard(this@QuoteReminderActivity, null)
+                        // Wait a bit for keyguard to be dismissed
+                        delay(500)
+                    }
+                }
+
+                // Step 2: Generate share image
+                val shareIntent = ShareHelper.shareQuoteAsImage(
+                    applicationContext,
+                    quoteText,
+                    themeMode
+                )
+
+                // Step 3: Show share chooser
+                val chooser = ShareHelper.createShareChooser(shareIntent, "分享语录")
+                shareLauncher.launch(chooser)
+
+                // Step 4: Close the reminder activity after starting share
+                delay(300)
+                finish()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     override fun onBackPressed() {
         finish()
     }
@@ -111,20 +178,36 @@ class QuoteReminderActivity : ComponentActivity() {
 @Composable
 private fun QuoteReminderScreen(
     quoteText: String,
-    onDismiss: () -> Unit
+    themeMode: ThemeMode,
+    onDismiss: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    onShareClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    var isFavorite by remember { mutableStateOf(false) }
+
+    // Check favorite status (simplified - in real app would flow from DB)
+    LaunchedEffect(quoteText) {
+        // This is a placeholder - actual implementation would use ViewModel
+        // For now, we'll just check if it exists and could be favorited
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.92f))
-            .clickable(onClick = onDismiss),
+            .clickable(
+                onClick = onDismiss,
+                indication = null,
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+            ),
         contentAlignment = Alignment.Center
     ) {
         // Quote card
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 20.dp),
             shape = MaterialTheme.shapes.extraLarge,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
@@ -134,7 +217,7 @@ private fun QuoteReminderScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 40.dp),
+                    .padding(horizontal = 24.dp, vertical = 32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // App title
@@ -144,7 +227,7 @@ private fun QuoteReminderScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
 
                 // Big quote text
                 Text(
@@ -158,7 +241,47 @@ private fun QuoteReminderScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(24.dp))
+
+                // Action buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Share button
+                    IconButton(
+                        onClick = onShareClick,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Share,
+                            contentDescription = "分享",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(Modifier.width(16.dp))
+
+                    // Favorite button
+                    IconButton(
+                        onClick = {
+                            onFavoriteClick()
+                            isFavorite = !isFavorite
+                        },
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "收藏",
+                            tint = if (isFavorite) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(16.dp))
 
                 // Dismiss hint
                 Text(

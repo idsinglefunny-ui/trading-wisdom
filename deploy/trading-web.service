@@ -1,0 +1,20 @@
+[Unit]
+Description=Trading Wisdom Web
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/trading-web
+ExecStart=/usr/bin/npm run start
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

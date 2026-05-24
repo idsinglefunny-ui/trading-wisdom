@@ -10,8 +10,14 @@ interface QuoteDao {
     @Query("SELECT * FROM quotes ORDER BY createdAt DESC")
     fun getAllQuotes(): Flow<List<QuoteEntity>>
 
+    @Query("SELECT * FROM quotes ORDER BY createdAt DESC")
+    suspend fun getAllQuotesLocal(): List<QuoteEntity>
+
     @Query("SELECT * FROM quotes WHERE id = :id")
     suspend fun getQuoteById(id: Long): QuoteEntity?
+
+    @Query("SELECT * FROM quotes WHERE content = :content LIMIT 1")
+    suspend fun getQuoteByContent(content: String): QuoteEntity?
 
     @Query("SELECT * FROM quotes WHERE isFavorite = 1 ORDER BY createdAt DESC")
     fun getFavoriteQuotes(): Flow<List<QuoteEntity>>

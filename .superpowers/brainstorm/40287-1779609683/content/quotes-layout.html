@@ -1,0 +1,107 @@
+<h2>语录浏览页布局</h2>
+<p class="subtitle">访客如何浏览和查看交易语录</p>
+
+<div class="cards">
+  <div class="card" data-choice="grid" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#0F172A;color:#F8FAFC;padding:20px;border-radius:8px;height:200px;overflow:hidden;">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <span style="background:#3B82F6;padding:6px 16px;border-radius:20px;font-size:12px;">全部</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">纪律</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">心态</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">风控</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:#1E293B;padding:16px;border-radius:8px;">
+            <div style="font-size:13px;margin-bottom:8px;">"止损是交易的第一课"</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="background:#0EA5E9;padding:2px 8px;border-radius:4px;font-size:10px;">风控</span>
+              <span style="color:#64748B;font-size:11px;">❤️ 23</span>
+            </div>
+          </div>
+          <div style="background:#1E293B;padding:16px;border-radius:8px;">
+            <div style="font-size:13px;margin-bottom:8px;">"趋势是你的朋友"</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="background:#8B5CF6;padding:2px 8px;border-radius:4px;font-size:10px;">技术</span>
+              <span style="color:#64748B;font-size:11px;">❤️ 45</span>
+            </div>
+          </div>
+          <div style="background:#1E293B;padding:16px;border-radius:8px;">
+            <div style="font-size:13px;margin-bottom:8px;">"不要让亏损吞噬信心"</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="background:#F59E0B;padding:2px 8px;border-radius:4px;font-size:10px;">心态</span>
+              <span style="color:#64748B;font-size:11px;">❤️ 67</span>
+            </div>
+          </div>
+          <div style="background:#1E293B;padding:16px;border-radius:8px;">
+            <div style="font-size:13px;margin-bottom:8px;">"计划你的交易，交易你的计划"</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="background:#10B981;padding:2px 8px;border-radius:4px;font-size:10px;">纪律</span>
+              <span style="color:#64748B;font-size:11px;">❤️ 89</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>卡片网格布局</h3>
+      <p>双列卡片，一目了然，适合快速浏览</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="list" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#0F172A;color:#F8FAFC;padding:20px;border-radius:8px;height:200px;overflow:hidden;">
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <span style="background:#3B82F6;padding:6px 16px;border-radius:20px;font-size:12px;">全部</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">纪律</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">心态</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="background:#1E293B;padding:14px 16px;border-radius:8px;display:flex;gap:12px;align-items:center;">
+            <div style="flex:1;font-size:14px;">"止损是交易的第一课，学会止损才能生存"</div>
+            <span style="background:#0EA5E9;padding:4px 10px;border-radius:4px;font-size:11px;">风控</span>
+          </div>
+          <div style="background:#1E293B;padding:14px 16px;border-radius:8px;display:flex;gap:12px;align-items:center;">
+            <div style="flex:1;font-size:14px;">"计划你的交易，交易你的计划"</div>
+            <span style="background:#10B981;padding:4px 10px;border-radius:4px;font-size:11px;">纪律</span>
+          </div>
+          <div style="background:#1E293B;padding:14px 16px;border-radius:8px;display:flex;gap:12px;align-items:center;">
+            <div style="flex:1;font-size:14px;">"不要让情绪左右你的交易决策"</div>
+            <span style="background:#F59E0B;padding:4px 10px;border-radius:4px;font-size:11px;">心态</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>列表布局</h3>
+      <p>单列列表，展示更长的完整语录内容</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="single" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup" style="background:#0F172A;color:#F8FAFC;padding:20px;border-radius:8px;height:200px;overflow:hidden;">
+        <div style="display:flex;gap:8px;margin-bottom:24px;justify-content:center;">
+          <span style="background:#3B82F6;padding:6px 16px;border-radius:20px;font-size:12px;">全部</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">纪律</span>
+          <span style="background:#1E293B;padding:6px 16px;border-radius:20px;font-size:12px;">心态</span>
+        </div>
+        <div style="text-align:center;padding:20px;">
+          <div style="font-size:22px;font-weight:600;margin-bottom:16px;line-height:1.6;">
+            "止损是交易的第一课，学会止损才能生存。"
+          </div>
+          <div style="display:flex;justify-content:center;gap:16px;align-items:center;">
+            <span style="background:#0EA5E9;padding:4px 12px;border-radius:4px;font-size:12px;">风控</span>
+            <span style="color:#64748B;font-size:13px;">❤️ 23</span>
+            <button style="background:#3B82F6;border:none;padding:8px 20px;border-radius:6px;font-size:13px;">下一条</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>单条聚焦布局</h3>
+      <p>一次展示一条语录，类似 App 首页体验</p>
+    </div>
+  </div>
+</div>

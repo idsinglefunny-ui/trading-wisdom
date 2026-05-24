@@ -46,9 +46,16 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Add viewCount column to quotes table
+        db.execSQL("ALTER TABLE quotes ADD COLUMN viewCount INTEGER DEFAULT 0")
+    }
+}
+
 @Database(
     entities = [QuoteEntity::class, AlarmEntity::class, SettingEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class TradeYourPlanDatabase : RoomDatabase() {

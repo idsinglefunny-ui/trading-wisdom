@@ -11,5 +11,6 @@ data class Quote(
     val marketType: MarketType,
     val source: QuoteSource,
     val isFavorite: Boolean = false,
+    val viewCount: Int = 0,
     val createdAt: Long = System.currentTimeMillis()
 )

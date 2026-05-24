@@ -37,6 +37,8 @@ import android.widget.Toast
 import com.tradeyourplan.notification.AlarmReceiver
 import com.tradeyourplan.notification.QuoteReminderService
 import com.tradeyourplan.ui.theme.ThemeMode
+import com.tradeyourplan.utils.ShareHelper
+import kotlinx.coroutines.launch
 
 data class BottomNavItem(
     val route: String,
@@ -105,10 +107,12 @@ fun MainScreen(
             when (selectedTab) {
                 0 -> HomeTab(
                     viewModel = mainViewModel,
+                    settingsViewModel = settingsViewModel,
                     modifier = Modifier.fillMaxSize()
                 )
                 1 -> QuotesTab(
                     viewModel = quoteViewModel,
+                    settingsViewModel = settingsViewModel,
                     modifier = Modifier.fillMaxSize()
                 )
                 2 -> AlarmsTab(
@@ -135,10 +139,13 @@ fun MainScreen(
 @Composable
 private fun HomeTab(
     viewModel: MainViewModel,
+    settingsViewModel: SettingsViewModel,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val themeMode by settingsViewModel.themeMode.collectAsState(initial = ThemeMode.PROFESSIONAL_DARK)
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = modifier
@@ -160,15 +167,15 @@ private fun HomeTab(
                         quote = quote,
                         onFavoriteClick = { viewModel.toggleFavorite(quote.id) },
                         onShareClick = {
-                            val shareText = """${quote.content}
-
-—— 交易你的计划
-#交易智慧 #投资语录""".trimIndent()
-                            val intent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, shareText)
+                            coroutineScope.launch {
+                                val shareIntent = ShareHelper.shareQuoteAsImage(
+                                    context,
+                                    quote.content,
+                                    themeMode
+                                )
+                                val chooser = ShareHelper.createShareChooser(shareIntent, "分享语录")
+                                context.startActivity(chooser)
                             }
-                            context.startActivity(Intent.createChooser(intent, "分享语录"))
                         }
                     )
                     Spacer(Modifier.height(24.dp))
@@ -194,11 +201,14 @@ private fun HomeTab(
 @Composable
 private fun QuotesTab(
     viewModel: QuoteViewModel,
+    settingsViewModel: SettingsViewModel,
     modifier: Modifier = Modifier
 ) {
     val quotes by viewModel.quotes.collectAsState()
     val filterCategory by viewModel.filterCategory.collectAsState()
+    val themeMode by settingsViewModel.themeMode.collectAsState(initial = ThemeMode.PROFESSIONAL_DARK)
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Box(modifier = modifier) {
         if (quotes.isEmpty()) {
@@ -260,15 +270,15 @@ private fun QuotesTab(
                         quote = quote,
                         onFavoriteClick = { viewModel.toggleFavorite(quote.id) },
                         onShareClick = {
-                            val shareText = """${quote.content}
-
-—— 交易你的计划
-#交易智慧 #投资语录""".trimIndent()
-                            val intent = Intent(Intent.ACTION_SEND).apply {
-                                type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, shareText)
+                            coroutineScope.launch {
+                                val shareIntent = ShareHelper.shareQuoteAsImage(
+                                    context,
+                                    quote.content,
+                                    themeMode
+                                )
+                                val chooser = ShareHelper.createShareChooser(shareIntent, "分享语录")
+                                context.startActivity(chooser)
                             }
-                            context.startActivity(Intent.createChooser(intent, "分享语录"))
                         }
                     )
                 }
@@ -341,25 +351,6 @@ private fun AlarmsTab(
                             showEditDialog = true
                         }
                     )
-                }
-
-                // Test alarm button
-                item {
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedButton(
-                        onClick = {
-                            if (!hasAllRequiredPermissions(context)) {
-                                onRequestPermission()
-                            } else {
-                                scheduleTestAlarm(context)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Icon(Icons.Default.Timer, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Spacer(Modifier.width(8.dp))
-                        Text("测试后台闹钟（15秒后触发）")
-                    }
                 }
             }
         }
@@ -464,6 +455,7 @@ private fun SettingsTab(
             }
         }
 
+        /*
         // 测试弹窗功能
         item {
             SettingsSection(
@@ -489,18 +481,10 @@ private fun SettingsTab(
                     ) {
                         Text("立即测试弹窗（跟随主题）")
                     }
-
-                    OutlinedButton(
-                        onClick = {
-                            scheduleTestAlarm(context)
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("设置15秒后测试闹钟（请锁屏测试）")
-                    }
                 }
             }
         }
+        */
 
         // 关于
         item {
@@ -601,34 +585,6 @@ private fun SettingsPermissionSection(context: Context) {
                 )
             }
         }
-    }
-}
-
-private fun scheduleTestAlarm(context: Context) {
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(context, AlarmReceiver::class.java).apply {
-        action = "com.tradeyourplan.ALARM_TRIGGERED"
-        putExtra("alarm_id", -1L)
-    }
-    val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-    } else {
-        PendingIntent.FLAG_UPDATE_CURRENT
-    }
-    val pendingIntent = PendingIntent.getBroadcast(context, 9999, intent, flags)
-
-    val triggerTime = System.currentTimeMillis() + 15_000
-
-    try {
-        // Use setAndAllowWhileIdle instead of setExactAndAllowWhileIdle
-        // This works better on Huawei devices
-        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
-        Toast.makeText(context, "测试闹钟已设置，15秒后触发。请立即锁屏测试", Toast.LENGTH_LONG).show()
-    } catch (e: SecurityException) {
-        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
-        Toast.makeText(context, "测试闹钟已设置（普通模式），15秒后触发", Toast.LENGTH_LONG).show()
-    } catch (e: Exception) {
-        Toast.makeText(context, "设置测试闹钟失败: ${e.message}", Toast.LENGTH_LONG).show()
     }
 }
 
