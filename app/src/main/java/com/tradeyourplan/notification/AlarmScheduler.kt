@@ -8,6 +8,8 @@ import android.os.Build
 import android.util.Log
 import com.tradeyourplan.data.model.Alarm
 import com.tradeyourplan.domain.model.AlarmType
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AlarmScheduler(private val context: Context) {
 
@@ -21,7 +23,7 @@ class AlarmScheduler(private val context: Context) {
         get() = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun scheduleAlarm(alarm: Alarm) {
-        Log.d(TAG, "Scheduling alarm: id=${alarm.id}, type=${alarm.type}, enabled=${alarm.isEnabled}")
+        Log.d(TAG, "scheduleAlarm called: id=${alarm.id}, type=${alarm.type}, enabled=${alarm.isEnabled}, hour=${alarm.hour}, minute=${alarm.minute}")
         when (alarm.type) {
             AlarmType.FIXED -> scheduleFixedAlarm(alarm)
             AlarmType.RANDOM -> scheduleRandomAlarm(alarm)
@@ -38,39 +40,33 @@ class AlarmScheduler(private val context: Context) {
         val pendingIntent = createPendingIntent(alarm.id, intent)
 
         val triggerTime = getTriggerTime(alarm.hour, alarm.minute)
-        Log.d(TAG, "Scheduling fixed alarm for ${String.format("%02d:%02d", alarm.hour, alarm.minute)} at $triggerTime")
+        val currentTime = System.currentTimeMillis()
+        Log.d(TAG, "Scheduling fixed alarm for ${String.format("%02d:%02d", alarm.hour, alarm.minute)}")
+        Log.d(TAG, "Current time: ${java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.CHINA).format(Date(currentTime))}")
+        Log.d(TAG, "Trigger time: ${java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.CHINA).format(Date(triggerTime))}")
+        Log.d(TAG, "Time from now: ${(triggerTime - currentTime) / 1000}s")
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // 检查权限
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                    Log.d(TAG, "Scheduled with setExactAndAllowWhileIdle")
-                } else {
-                    Log.w(TAG, "Cannot schedule exact alarms - permission denied")
-                    // 降级到不精确的闹钟
-                    alarmManager.setAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                }
-            } else {
-                alarmManager.setExact(
+            // Use setAlarmClock() for guaranteed delivery on Huawei devices
+            // setAlarmClock has special system privileges and cannot be delayed by app standby
+            val showPendingIntent = createShowPendingIntent(alarm)
+            alarmManager.setAlarmClock(
+                AlarmManager.AlarmClockInfo(triggerTime, showPendingIntent),
+                pendingIntent
+            )
+            Log.d(TAG, "Successfully scheduled with setAlarmClock (guaranteed delivery)")
+        } catch (e: Exception) {
+            Log.e(TAG, "Exception with setAlarmClock, falling back to setAndAllowWhileIdle", e)
+            try {
+                alarmManager.setAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     triggerTime,
                     pendingIntent
                 )
-                Log.d(TAG, "Scheduled with setExact")
+                Log.d(TAG, "Fallback to setAndAllowWhileIdle succeeded")
+            } catch (e2: Exception) {
+                Log.e(TAG, "Fallback also failed", e2)
             }
-        } catch (e: SecurityException) {
-            Log.e(TAG, "SecurityException when scheduling alarm", e)
-        } catch (e: Exception) {
-            Log.e(TAG, "Exception when scheduling alarm", e)
         }
     }
 
@@ -104,7 +100,6 @@ class AlarmScheduler(private val context: Context) {
     }
 
     private fun createAlarmIntent(alarmId: Long): Intent {
-        // 使用显式Intent
         return Intent(context, AlarmReceiver::class.java).apply {
             action = "com.tradeyourplan.ALARM_TRIGGERED"
             putExtra(EXTRA_ALARM_ID, alarmId)
@@ -122,6 +117,26 @@ class AlarmScheduler(private val context: Context) {
             context,
             (ALARM_REQUEST_CODE_BASE + alarmId).toInt(),
             intent,
+            flags
+        )
+    }
+
+    private fun createShowPendingIntent(alarm: Alarm): PendingIntent? {
+        // Create a PendingIntent for showing the alarm icon in status bar
+        // This is used by setAlarmClock to indicate an active alarm
+        val showIntent = Intent(context, AlarmReceiver::class.java).apply {
+            action = "com.tradeyourplan.ALARM_SHOW"
+            putExtra(EXTRA_ALARM_ID, alarm.id)
+        }
+        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            (ALARM_REQUEST_CODE_BASE + alarm.id + 50000).toInt(),
+            showIntent,
             flags
         )
     }

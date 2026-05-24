@@ -33,6 +33,9 @@ class QuoteViewModel @Inject constructor(
         private const val TAG = "QuoteViewModel"
     }
 
+    private val _filterCategory = MutableStateFlow<Category?>(null)
+    val filterCategory: StateFlow<Category?> = _filterCategory.asStateFlow()
+
     // 观察语录来源设置
     private val quoteSourceFilter: StateFlow<QuoteSource?> = settingsRepository.quoteSource
         .map { sourceStr ->
@@ -49,22 +52,20 @@ class QuoteViewModel @Inject constructor(
             initialValue = null
         )
 
-    // 根据来源过滤语录
+    // 根据来源和分类过滤语录
     val quotes: StateFlow<List<Quote>> = combine(
         getQuotesUseCase(),
-        quoteSourceFilter
-    ) { allQuotes, sourceFilter ->
-        Log.d(TAG, "combine: allQuotes.size=${allQuotes.size}, sourceFilter=$sourceFilter")
-        val result = if (sourceFilter == null) {
+        quoteSourceFilter,
+        _filterCategory
+    ) { allQuotes, sourceFilter, categoryFilter ->
+        var result = if (sourceFilter == null) {
             allQuotes // MIXED - 返回所有
         } else {
-            allQuotes.filter {
-                val matches = it.source == sourceFilter
-                Log.d(TAG, "Filter: quote.source=${it.source}, sourceFilter=$sourceFilter, matches=$matches")
-                matches
-            }
+            allQuotes.filter { it.source == sourceFilter }
         }
-        Log.d(TAG, "Result: ${result.size} quotes")
+        if (categoryFilter != null) {
+            result = result.filter { it.category == categoryFilter }
+        }
         result
     }.stateIn(
         scope = viewModelScope,
@@ -78,9 +79,6 @@ class QuoteViewModel @Inject constructor(
             started = SharingStarted.Eagerly,
             initialValue = emptyList()
         )
-
-    private val _filterCategory = MutableStateFlow<Category?>(null)
-    val filterCategory: StateFlow<Category?> = _filterCategory.asStateFlow()
 
     var showAddDialog by mutableStateOf(false)
         private set

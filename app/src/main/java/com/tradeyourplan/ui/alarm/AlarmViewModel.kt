@@ -63,7 +63,9 @@ class AlarmViewModel @Inject constructor(
             toggleAlarmUseCase(id, enabled)
             if (enabled) {
                 val alarm = alarms.value.find { it.id == id }
-                if (alarm != null) {
+                if (alarm != null && alarm.hour != null && alarm.minute != null) {
+                    // First cancel any existing alarm, then schedule fresh
+                    alarmScheduler.cancelAlarm(id)
                     alarmScheduler.scheduleAlarm(alarm.copy(isEnabled = true))
                 }
             } else {

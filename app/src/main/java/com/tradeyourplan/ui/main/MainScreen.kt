@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,10 +20,22 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tradeyourplan.data.model.Alarm
 import com.tradeyourplan.data.model.Quote
 import com.tradeyourplan.domain.model.Category
+import com.tradeyourplan.domain.model.NotificationLevel
 import com.tradeyourplan.ui.alarm.AlarmViewModel
 import com.tradeyourplan.ui.components.*
+import com.tradeyourplan.ui.components.hasAllRequiredPermissions
+import com.tradeyourplan.ui.components.hasNotificationPermission
+import com.tradeyourplan.ui.components.hasOverlayPermission
 import com.tradeyourplan.ui.quote.QuoteViewModel
 import com.tradeyourplan.ui.settings.SettingsViewModel
+import android.content.Context
+import android.os.Build
+import android.provider.Settings
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.widget.Toast
+import com.tradeyourplan.notification.AlarmReceiver
+import com.tradeyourplan.notification.QuoteReminderService
 import com.tradeyourplan.ui.theme.ThemeMode
 
 data class BottomNavItem(
@@ -39,6 +53,24 @@ fun MainScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
     var selectedTab by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+
+    // Permission state
+    var showPermissionDialog by remember { mutableStateOf(!hasAllRequiredPermissions(context)) }
+
+    // Re-check on resume
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                if (!hasAllRequiredPermissions(context)) {
+                    showPermissionDialog = true
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     val tabs = listOf(
         BottomNavItem("home", Icons.Default.Home, "首页"),
@@ -81,7 +113,8 @@ fun MainScreen(
                 )
                 2 -> AlarmsTab(
                     viewModel = alarmViewModel,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    onRequestPermission = { showPermissionDialog = true }
                 )
                 3 -> SettingsTab(
                     viewModel = settingsViewModel,
@@ -89,6 +122,13 @@ fun MainScreen(
                 )
             }
         }
+    }
+
+    // Permission guide dialog
+    if (showPermissionDialog) {
+        PermissionGuideDialog(
+            onDismiss = { showPermissionDialog = false }
+        )
     }
 }
 
@@ -263,11 +303,13 @@ private fun QuotesTab(
 @Composable
 private fun AlarmsTab(
     viewModel: AlarmViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onRequestPermission: () -> Unit = {}
 ) {
     val alarms by viewModel.alarms.collectAsState()
     var showEditDialog by remember { mutableStateOf(false) }
     var editingAlarm by remember { mutableStateOf<Alarm?>(null) }
+    val context = LocalContext.current
 
     Box(modifier = modifier) {
         if (alarms.isEmpty()) {
@@ -300,6 +342,25 @@ private fun AlarmsTab(
                         }
                     )
                 }
+
+                // Test alarm button
+                item {
+                    Spacer(Modifier.height(8.dp))
+                    OutlinedButton(
+                        onClick = {
+                            if (!hasAllRequiredPermissions(context)) {
+                                onRequestPermission()
+                            } else {
+                                scheduleTestAlarm(context)
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(Icons.Default.Timer, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("测试后台闹钟（15秒后触发）")
+                    }
+                }
             }
         }
 
@@ -311,8 +372,12 @@ private fun AlarmsTab(
         ) {
             FloatingActionButton(
                 onClick = {
-                    editingAlarm = null
-                    showEditDialog = true
+                    if (!hasAllRequiredPermissions(context)) {
+                        onRequestPermission()
+                    } else {
+                        editingAlarm = null
+                        showEditDialog = true
+                    }
                 }
             ) {
                 Icon(Icons.Default.Add, "添加提醒")
@@ -350,52 +415,220 @@ private fun SettingsTab(
 ) {
     val themeMode by viewModel.themeMode.collectAsState()
     val quoteSource by viewModel.quoteSource.collectAsState()
+    val context = LocalContext.current
 
-    Column(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // 主题设置
-        SettingsSection(
-            title = "主题设置",
-            icon = { Icon(Icons.Default.Palette, null) }
-        ) {
-            ThemePicker(
-                currentTheme = themeMode,
-                onThemeSelected = { viewModel.setThemeMode(it) }
-            )
-        }
-
-        // 语录来源设置
-        SettingsSection(
-            title = "语录来源",
-            icon = { Icon(Icons.Default.List, null) }
-        ) {
-            QuoteSourcePicker(
-                currentSource = quoteSource,
-                onSourceSelected = { viewModel.setQuoteSource(it) }
-            )
-        }
-
-        // 关于
-        SettingsSection(
-            title = "关于",
-            icon = { Icon(Icons.Default.Info, null) }
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        item {
+            SettingsSection(
+                title = "主题设置",
+                icon = { Icon(Icons.Default.Palette, null) }
             ) {
-                Text("交易你的计划", style = MaterialTheme.typography.titleMedium)
-                Text("版本 1.0.0", style = MaterialTheme.typography.bodySmall)
-                Text(
-                    "让交易智慧常伴左右，帮助投资者建立正确的交易心态和纪律。",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ThemePicker(
+                    currentTheme = themeMode,
+                    onThemeSelected = { viewModel.setThemeMode(it) }
                 )
             }
         }
+
+        // 语录来源设置
+        item {
+            SettingsSection(
+                title = "语录来源",
+                icon = { Icon(Icons.Default.List, null) }
+            ) {
+                QuoteSourcePicker(
+                    currentSource = quoteSource,
+                    onSourceSelected = { viewModel.setQuoteSource(it) }
+                )
+            }
+        }
+
+        // 权限检查
+        item {
+            SettingsPermissionSection(context = context)
+        }
+
+        // 提醒样式预览
+        item {
+            SettingsSection(
+                title = "提醒样式",
+                icon = { Icon(Icons.Default.Notifications, null) }
+            ) {
+                NotificationPreview(context = context)
+            }
+        }
+
+        // 测试弹窗功能
+        item {
+            SettingsSection(
+                title = "测试弹窗",
+                icon = { Icon(Icons.Default.BugReport, null) }
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        "如果弹窗不显示，请按以下步骤测试：",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Button(
+                        onClick = {
+                            // 启动跟随主题的 Activity 进行预览
+                            val intent = Intent(context, com.tradeyourplan.notification.QuoteReminderActivity::class.java)
+                            intent.putExtra(com.tradeyourplan.notification.QuoteReminderActivity.EXTRA_QUOTE_TEXT, "这是一条主题跟随的弹窗预览")
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("立即测试弹窗（跟随主题）")
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            scheduleTestAlarm(context)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("设置15秒后测试闹钟（请锁屏测试）")
+                    }
+                }
+            }
+        }
+
+        // 关于
+        item {
+            SettingsSection(
+                title = "关于",
+                icon = { Icon(Icons.Default.Info, null) }
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text("交易智慧", style = MaterialTheme.typography.titleMedium)
+                    Text("版本 1.0.0", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        "让交易智慧常伴左右，帮助投资者建立正确的交易心态和纪律。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsPermissionSection(context: Context) {
+    var hasNotif by remember { mutableStateOf(hasNotificationPermission(context)) }
+    var hasOverlay by remember { mutableStateOf(hasOverlayPermission(context)) }
+
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                hasNotif = hasNotificationPermission(context)
+                hasOverlay = hasOverlayPermission(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val allGranted = hasNotif && hasOverlay
+
+    SettingsSection(
+        title = "权限状态",
+        icon = { Icon(Icons.Default.Security, null) }
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // Notification status
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = if (hasNotif) MaterialTheme.colorScheme.primary
+                           else MaterialTheme.colorScheme.error
+                )
+                Text(
+                    if (hasNotif) "通知权限：已授权" else "通知权限：未授权",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (hasNotif) MaterialTheme.colorScheme.onSurface
+                           else MaterialTheme.colorScheme.error
+                )
+            }
+
+            // Overlay status
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = if (hasOverlay) MaterialTheme.colorScheme.primary
+                           else MaterialTheme.colorScheme.error
+                )
+                Text(
+                    if (hasOverlay) "悬浮窗权限：已授权" else "悬浮窗权限：未授权",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = if (hasOverlay) MaterialTheme.colorScheme.onSurface
+                           else MaterialTheme.colorScheme.error
+                )
+            }
+
+            if (!allGranted) {
+                TYPButton(
+                    onClick = {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val intent = Intent(
+                                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                android.net.Uri.parse("package:${context.packageName}")
+                            )
+                            context.startActivity(intent)
+                        }
+                    },
+                    text = "去设置权限"
+                )
+            }
+        }
+    }
+}
+
+private fun scheduleTestAlarm(context: Context) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val intent = Intent(context, AlarmReceiver::class.java).apply {
+        action = "com.tradeyourplan.ALARM_TRIGGERED"
+        putExtra("alarm_id", -1L)
+    }
+    val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    } else {
+        PendingIntent.FLAG_UPDATE_CURRENT
+    }
+    val pendingIntent = PendingIntent.getBroadcast(context, 9999, intent, flags)
+
+    val triggerTime = System.currentTimeMillis() + 15_000
+
+    try {
+        // Use setAndAllowWhileIdle instead of setExactAndAllowWhileIdle
+        // This works better on Huawei devices
+        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+        Toast.makeText(context, "测试闹钟已设置，15秒后触发。请立即锁屏测试", Toast.LENGTH_LONG).show()
+    } catch (e: SecurityException) {
+        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent)
+        Toast.makeText(context, "测试闹钟已设置（普通模式），15秒后触发", Toast.LENGTH_LONG).show()
+    } catch (e: Exception) {
+        Toast.makeText(context, "设置测试闹钟失败: ${e.message}", Toast.LENGTH_LONG).show()
     }
 }
 
