@@ -9,8 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -122,21 +120,6 @@ private fun QuoteReminderScreen(
             .clickable(onClick = onDismiss),
         contentAlignment = Alignment.Center
     ) {
-        // Close button at top-right
-        IconButton(
-            onClick = onDismiss,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(24.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = "关闭",
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-
         // Quote card
         Card(
             modifier = Modifier

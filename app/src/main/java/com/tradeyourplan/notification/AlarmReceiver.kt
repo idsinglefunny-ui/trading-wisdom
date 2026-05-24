@@ -1,6 +1,5 @@
 package com.tradeyourplan.notification
 
-import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -34,10 +33,7 @@ class AlarmReceiver : BroadcastReceiver() {
         // Try to wake up the screen
         wakeUpScreen(context)
 
-        // Try to dismiss keyguard (unlock screen)
-        dismissKeyguard(context)
-
-        // 1. Post notification with fullScreenIntent
+        // Post notification with fullScreenIntent
         val notificationHelper = NotificationHelper(context)
         try {
             notificationHelper.showQuoteNotification(quoteText)
@@ -48,17 +44,7 @@ class AlarmReceiver : BroadcastReceiver() {
             android.util.Log.e("AlarmReceiver", "Error posting notification", e)
         }
 
-        // 2. Launch overlay via Service (WindowManager overlay) - FOR HUAWEI
-        try {
-            QuoteReminderService.start(context, quoteText)
-            Log.d(TAG, "QuoteReminderService start requested")
-            android.util.Log.d("AlarmReceiver", "QuoteReminderService start requested")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error starting service", e)
-            android.util.Log.e("AlarmReceiver", "Error starting service", e)
-        }
-
-        // 3. Direct activity launch - additional fallback
+        // Direct activity launch
         try {
             val overlayIntent = Intent(context, QuoteReminderActivity::class.java)
             overlayIntent.putExtra(QuoteReminderActivity.EXTRA_QUOTE_TEXT, quoteText)
@@ -93,27 +79,6 @@ class AlarmReceiver : BroadcastReceiver() {
             Log.d(TAG, "Screen woken up with FULL_WAKE_LOCK for 10 seconds")
         } catch (e: Exception) {
             Log.e(TAG, "Error waking screen", e)
-        }
-    }
-
-    private fun dismissKeyguard(context: Context) {
-        try {
-            val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            if (keyguardManager.isKeyguardLocked) {
-                Log.d(TAG, "Keyguard is locked, attempting to dismiss")
-                // Request to dismiss keyguard
-                val intent = Intent(context, QuoteReminderActivity::class.java)
-                intent.putExtra(QuoteReminderActivity.EXTRA_QUOTE_TEXT, "temp")
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-                context.startActivity(intent)
-                Log.d(TAG, "Dismiss keyguard attempted")
-            } else {
-                Log.d(TAG, "Keyguard is not locked")
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error dismissing keyguard", e)
         }
     }
 
